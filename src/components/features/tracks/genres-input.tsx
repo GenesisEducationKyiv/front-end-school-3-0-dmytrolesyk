@@ -41,7 +41,9 @@ export const GenresTagInput: React.FC<GenresTagInputProps> = ({ genres, value, o
             {genre}
             <Button
               type="button"
-              onClick={() => handleRemoveGenre(genre)}
+              onClick={() => {
+                handleRemoveGenre(genre);
+              }}
               variant="ghost"
               size="icon"
               className="h-4 w-4 p-0 ml-1"

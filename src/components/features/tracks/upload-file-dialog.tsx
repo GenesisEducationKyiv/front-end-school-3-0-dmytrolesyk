@@ -53,13 +53,13 @@ export function UploadFileDialog({
 
   const uploadFile = () => {
     if (trackToEdit && file) {
-      upload({ trackId: trackToEdit?.id, file });
+      upload({ trackId: trackToEdit.id, file });
     }
   };
 
   const removeFile = () => {
     if (trackToEdit) {
-      remove(trackToEdit?.id);
+      remove(trackToEdit.id);
     }
   };
 
@@ -90,7 +90,7 @@ export function UploadFileDialog({
             <div>
               {trackToEdit?.coverImage && (
                 <img
-                  src={trackToEdit?.coverImage}
+                  src={trackToEdit.coverImage}
                   alt="Cover preview"
                   className="mt-2 max-h-48 rounded col-span-3"
                 />
@@ -102,7 +102,11 @@ export function UploadFileDialog({
               <AudioPlayer trackId={trackToEdit.id} fileName={trackToEdit.audioFile} />
             </div>
           ) : (
-            <AudioFileUploadInput onChange={f => setFile(f)} />
+            <AudioFileUploadInput
+              onChange={f => {
+                setFile(f);
+              }}
+            />
           )}
           <DialogFooter>
             <Button

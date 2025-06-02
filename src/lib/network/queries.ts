@@ -3,17 +3,16 @@ import { AxiosError } from 'axios';
 import { apiClient } from './apiClient';
 import { SortingOrder, TrackI, TracksI } from '@/types/types';
 import { removeNullishValues } from '../utils';
-import { getFileUrl } from './getFileUrl';
 
 type ErrorResponse = { error?: string };
 
 const DEFAULT_ERROR = 'An error has occurred';
 
 const formatError = (e: AxiosError<ErrorResponse>) => ({
-  message: e.response?.data?.error ?? DEFAULT_ERROR,
+  message: e.response?.data.error ?? DEFAULT_ERROR,
 });
 
-const getData = <T>(promise: Promise<{ data: T }>): Promise<T> => promise.then(res => res?.data);
+const getData = <T>(promise: Promise<{ data: T }>): Promise<T> => promise.then(res => res.data);
 
 export const getTracks = (params?: {
   page: number;
@@ -43,26 +42,6 @@ export const getTrack = (trackSlug?: string) =>
     queryFn: async (): Promise<TrackI | null> =>
       trackSlug ? getData(apiClient.get(`tracks/${trackSlug}`)) : null,
   });
-
-// export const getFile = (fileName?: string) =>
-//   queryOptions({
-//     queryKey: ['GET_FILE'],
-//     queryFn: async (): Promise<File | null> => {
-//       if (!fileName) return null;
-//       const response = await getData<Blob>(
-//         apiClient.get(getFileUrl(fileName), { responseType: 'blob' }),
-//       );
-
-//       const blob = new Blob([response]);
-
-//       const file = new File([blob], fileName, {
-//         type: blob.type || 'audio/mpeg',
-//         lastModified: new Date().getTime(),
-//       });
-
-//       return file;
-//     },
-//   });
 
 export const getGenres = () =>
   queryOptions({

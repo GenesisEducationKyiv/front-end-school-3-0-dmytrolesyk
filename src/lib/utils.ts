@@ -7,3 +7,7 @@ export const removeNullishValues = <T extends Record<string, unknown>>(obj: T): 
   Object.fromEntries(
     Object.entries(obj).filter(([, value]) => value !== undefined && value !== null),
   ) as Partial<T>;
+
+export const safePromiseCall = <T>(cb: () => Promise<T>): void => {
+  void cb().catch(console.error);
+};

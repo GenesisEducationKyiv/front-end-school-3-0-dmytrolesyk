@@ -1,5 +1,3 @@
-import { getEnvValue } from '@/lib/system';
-
-const BASE_API_URL = getEnvValue('API_HOST');
+const BASE_API_URL = import.meta.env['VITE_API_HOST'];
 
 export const getFileUrl = (fileName: string) => `${BASE_API_URL}/api/files/${fileName}`;

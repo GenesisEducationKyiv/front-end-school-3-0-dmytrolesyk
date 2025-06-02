@@ -12,7 +12,7 @@ import { AddEditTrackDialog } from '@/components/features/tracks/add-edit-track-
 import { Button } from '@/components/ui/button';
 import { UploadFileDialog } from '@/components/features/tracks/upload-file-dialog';
 import { ConfirmDialog } from '@/components/features/tracks/confirm-dialog';
-import { TrackTableSkeleton } from '@/components/features/tracks/tracks-table-skeleton';
+import { TrackTableSkeleton } from '@/components/features/tracks/tracks-skeleton';
 import { getGenres, getTracks, useDeleteTrack } from '@/lib/network/queries';
 
 type SearchParamsType = {
@@ -49,6 +49,7 @@ const useQueryParamsTableState = () => {
   const { page, size, sort, order, q } = Route.useSearch();
   const routeApi = getRouteApi('/tracks');
   const navigate = routeApi.useNavigate();
+  const navigationError = 'Error occurred while navigating';
 
   const paginationState = { pageIndex: page - 1, pageSize: size };
   const sortingState = sort ? [{ id: sort, desc: order === 'desc' }] : [];
@@ -60,11 +61,13 @@ const useQueryParamsTableState = () => {
         page: pagination.pageIndex + 1,
         size: pagination.pageSize,
       }),
+    }).catch(() => {
+      console.error(navigationError);
     });
   };
 
   const updateSorting = (sorting: SortingState) => {
-    const sort = sorting[0];
+    const sort = sorting.at(0);
     const newSortParams = (
       !sort
         ? { sort: undefined, order: undefined }
@@ -72,12 +75,16 @@ const useQueryParamsTableState = () => {
     ) as Pick<SearchParamsType, 'sort' | 'order'>;
     navigate({
       search: prev => ({ ...prev, ...newSortParams }),
+    }).catch(() => {
+      console.error(navigationError);
     });
   };
 
   const updateSearch = (searchString: string) => {
     navigate({
       search: prev => ({ ...prev, q: searchString }),
+    }).catch(() => {
+      console.error(navigationError);
     });
   };
 
@@ -168,7 +175,9 @@ function TracksTablePage() {
           className="max-w-sm"
         />
         <Button
-          onClick={() => setAddEditDialogOpen(true)}
+          onClick={() => {
+            setAddEditDialogOpen(true);
+          }}
           className="cursor-pointer"
           variant="outline"
           data-testid="create-track-button"
@@ -204,7 +213,7 @@ function TracksTablePage() {
           onFormSubmit={() => {
             setAddEditDialogOpen(false);
             setSelectedTrack(null);
-            refetchTracks();
+            void refetchTracks();
           }}
         />
       )}
@@ -216,7 +225,7 @@ function TracksTablePage() {
           onFormSubmit={() => {
             setUploadFileDialogOpen(false);
             setSelectedTrack(null);
-            refetchTracks();
+            void refetchTracks();
           }}
         />
       )}
@@ -227,8 +236,8 @@ function TracksTablePage() {
           message="Track(s) will be deleted permanently"
           onConfirm={() => {
             if (selectedTrack?.id) {
-              deleteTrack(selectedTrack?.id);
-              refetchTracks();
+              deleteTrack(selectedTrack.id);
+              void refetchTracks();
             }
             setConfirmDeleteDialogOpen(false);
           }}

@@ -54,8 +54,8 @@ export function AudioFileUploadInput({ value, onChange, disabled = false }: File
     e.stopPropagation();
     setIsDragging(false);
 
-    const file = e.dataTransfer.files?.[0] || null;
-    if (file && file.type.startsWith('audio/')) {
+    const file = e.dataTransfer.files[0];
+    if (file.type.startsWith('audio/')) {
       handleFileChange(file);
     }
   };
@@ -65,7 +65,7 @@ export function AudioFileUploadInput({ value, onChange, disabled = false }: File
   };
 
   const formatFileSize = (bytes: number): string => {
-    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024) return String(bytes) + ' B';
     else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
     else return (bytes / 1048576).toFixed(1) + ' MB';
   };
@@ -83,7 +83,11 @@ export function AudioFileUploadInput({ value, onChange, disabled = false }: File
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={!disabled ? handleDrop : undefined}
-        onClick={() => !disabled && !audioSrc && inputRef.current && inputRef.current.click()}
+        onClick={() => {
+          if (!disabled && !audioSrc && inputRef.current) {
+            inputRef.current.click();
+          }
+        }}
       >
         {audioSrc ? (
           <div className="relative w-full h-full flex flex-col items-center justify-center">

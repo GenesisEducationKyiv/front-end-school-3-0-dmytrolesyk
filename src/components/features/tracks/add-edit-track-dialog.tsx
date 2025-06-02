@@ -90,7 +90,7 @@ export function AddEditTrackDialog({
     },
     onSubmit: ({ value: newTrack }) => {
       if (trackToEdit) {
-        editTrack({ id: trackToEdit?.id, ...newTrack });
+        editTrack({ id: trackToEdit.id, ...newTrack });
       } else {
         addTrack(newTrack);
       }
@@ -127,7 +127,7 @@ export function AddEditTrackDialog({
             onSubmit={e => {
               e.preventDefault();
               e.stopPropagation();
-              form.handleSubmit();
+              void form.handleSubmit();
             }}
           >
             <div className="grid gap-4 py-4">
@@ -142,7 +142,9 @@ export function AddEditTrackDialog({
                         id="title"
                         data-test-id="input-title"
                         onBlur={field.handleBlur}
-                        onChange={e => field.handleChange(e.target.value)}
+                        onChange={e => {
+                          field.handleChange(e.target.value);
+                        }}
                         value={field.state.value}
                         className="col-span-3"
                       />
@@ -168,7 +170,9 @@ export function AddEditTrackDialog({
                       </Label>
                       <Input
                         data-test-id="input-artist"
-                        onChange={e => field.handleChange(e.target.value)}
+                        onChange={e => {
+                          field.handleChange(e.target.value);
+                        }}
                         onBlur={field.handleBlur}
                         value={field.state.value}
                         id="artist"
@@ -196,7 +200,9 @@ export function AddEditTrackDialog({
                       </Label>
                       <Input
                         data-test-id="input-album"
-                        onChange={e => field.handleChange(e.target.value)}
+                        onChange={e => {
+                          field.handleChange(e.target.value);
+                        }}
                         value={field.state.value}
                         id="album"
                         className="col-span-3"
@@ -215,7 +221,9 @@ export function AddEditTrackDialog({
                       <div className="col-span-3">
                         <Input
                           data-test-id="input-cover-image"
-                          onChange={e => field.handleChange(e.target.value)}
+                          onChange={e => {
+                            field.handleChange(e.target.value);
+                          }}
                           onBlur={field.handleBlur}
                           value={field.state.value}
                           id="coverImage"
@@ -252,7 +260,9 @@ export function AddEditTrackDialog({
                         <GenresTagInput
                           value={field.state.value}
                           genres={genres}
-                          onChange={values => field.handleChange(values)}
+                          onChange={values => {
+                            field.handleChange(values);
+                          }}
                         />
                       </div>
                     </>

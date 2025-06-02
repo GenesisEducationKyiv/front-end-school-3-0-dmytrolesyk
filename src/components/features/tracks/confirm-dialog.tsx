@@ -29,7 +29,9 @@ export function ConfirmDialog({ open, setOpen, message, onConfirm }: ConfirmDial
           <AlertDialogCancel
             data-testid="cancel-delete"
             className="cursor-pointer"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+            }}
           >
             Cancel
           </AlertDialogCancel>
