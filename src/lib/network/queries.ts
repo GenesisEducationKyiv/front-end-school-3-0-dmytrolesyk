@@ -3,16 +3,8 @@ import { AxiosError } from 'axios';
 import { apiClient } from './apiClient';
 import { SortingOrder, TrackI, TracksI } from '@/types/types';
 import { removeNullishValues } from '../utils';
-
-type ErrorResponse = { error?: string };
-
-const DEFAULT_ERROR = 'An error has occurred';
-
-const formatError = (e: AxiosError<ErrorResponse>) => ({
-  message: e.response?.data.error ?? DEFAULT_ERROR,
-});
-
-const getData = <T>(promise: Promise<{ data: T }>): Promise<T> => promise.then(res => res.data);
+import { TrackSchema, TracksResponseSchema } from '@/types/schemas';
+import { formatError, getData, ErrorResponse, validateApiResponseSchema } from './networkUtils';
 
 export const getTracks = (params?: {
   page: number;
@@ -25,12 +17,14 @@ export const getTracks = (params?: {
 
   return queryOptions({
     queryKey: ['GET_TRACKS', page, limit, sort, order, search],
-    queryFn: (): Promise<TracksI> => {
+    queryFn: async (): Promise<TracksI> => {
       const searchParams = new URLSearchParams(
         removeNullishValues({ page: String(page), limit: String(limit), sort, order, search }),
       );
 
-      return getData(apiClient.get(`/tracks?${searchParams.toString()}`));
+      const data = await getData(apiClient.get<TracksI>(`/tracks?${searchParams.toString()}`));
+
+      return validateApiResponseSchema('/tracks', TracksResponseSchema, data);
     },
     placeholderData: keepPreviousData,
   });
@@ -39,8 +33,15 @@ export const getTracks = (params?: {
 export const getTrack = (trackSlug?: string) =>
   queryOptions({
     queryKey: ['GET_TRACK', trackSlug],
-    queryFn: async (): Promise<TrackI | null> =>
-      trackSlug ? getData(apiClient.get(`tracks/${trackSlug}`)) : null,
+    queryFn: async (): Promise<TrackI | null> => {
+      if (!trackSlug) {
+        return null;
+      }
+      const endpoint = `tracks/${trackSlug}`;
+      const data = await getData(apiClient.get<TrackI>(endpoint));
+
+      return validateApiResponseSchema(endpoint, TrackSchema, data);
+    },
   });
 
 export const getGenres = () =>

@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { DebounceInput } from 'react-debounce-input';
 import { createFileRoute, getRouteApi } from '@tanstack/react-router';
 import { PaginationState, SortingState } from '@tanstack/react-table';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { createColumns } from '@/components/features/tracks/columns';
 import { DataTable } from '@/components/features/tracks/data-table';
 import { SortingOrder, TrackData } from '@/types/types';
@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { UploadFileDialog } from '@/components/features/tracks/upload-file-dialog';
 import { ConfirmDialog } from '@/components/features/tracks/confirm-dialog';
 import { TrackTableSkeleton } from '@/components/features/tracks/tracks-skeleton';
-import { getGenres, getTracks, useDeleteTrack } from '@/lib/network/queries';
+import { getTracks, useDeleteTrack } from '@/lib/network/queries';
 
 type SearchParamsType = {
   page: number;
@@ -35,13 +35,6 @@ export const Route = createFileRoute('/tracks')({
       order,
       q,
     } as SearchParamsType;
-  },
-  loaderDeps: ({ search }) => search,
-  loader: ({ context: { queryClient }, deps: { page, size, sort, order, q } }) => {
-    return [
-      queryClient.ensureQueryData(getTracks({ page, limit: size, sort, order, search: q })),
-      queryClient.ensureQueryData(getGenres()),
-    ];
   },
 });
 
@@ -122,9 +115,10 @@ function TracksTablePage() {
   } = useQueryParamsTableState();
 
   const {
-    data: { data, meta },
+    data,
+    isLoading,
     refetch: refetchTracks,
-  } = useSuspenseQuery(getTracks({ page, limit: size, sort, order, search }));
+  } = useQuery(getTracks({ page, limit: size, sort, order, search }));
 
   const { mutate: deleteTrack } = useDeleteTrack({
     onSuccess: () => {
@@ -153,6 +147,10 @@ function TracksTablePage() {
       }),
     [],
   );
+
+  if (isLoading || !data) {
+    return <TrackTableSkeleton />;
+  }
 
   return (
     <div className="container mx-auto py-10">
@@ -199,8 +197,8 @@ function TracksTablePage() {
           updateSorting(newSortingState);
         }}
         columns={columns}
-        data={data}
-        metaData={meta}
+        data={data.data}
+        metaData={data.meta}
       />
       {addEditDialogOpen && (
         <AddEditTrackDialog
