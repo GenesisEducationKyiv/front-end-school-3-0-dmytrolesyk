@@ -5,7 +5,7 @@
 
 ## Context
 
-Our music app currently uses basic TypeScript linting but lacks comprehensive type safety checks. As the codebase grows with complex state management (via URL query params) and new functinality will be added in teh future, we need stricter type checking to catch potential runtime errors early.
+Our music app currently uses basic TypeScript linting but lacks comprehensive type safety checks. As the codebase grows with complex state management (via URL query params) and new functionality will be added in the future, we need stricter type checking to catch potential runtime errors early.
 
 ## Decision
 
