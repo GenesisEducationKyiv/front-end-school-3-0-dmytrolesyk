@@ -25,7 +25,7 @@ export const getTracks = (params?: {
     queryFn: async (): Promise<TracksI> => {
       const endpoint = '/tracks';
       const searchParams = new URLSearchParams(
-        cleanSearchParams({ page: String(page), limit: String(limit), sort, order, search }),
+        cleanSearchParams({ page: page, limit: limit, sort, order, search }),
       );
 
       const data = await getData(apiClient.get<TracksI>(`${endpoint}?${searchParams.toString()}`));

@@ -22,12 +22,16 @@ export const validateApiResponseSchema = <T>(
 };
 
 export const cleanSearchParams = (
-  obj: Record<string, string | null | undefined>,
+  obj: Record<string, string | null | undefined | number>,
 ): Record<string, string> => {
   const result: Record<string, string> = {};
   for (const key in obj) {
     if (obj[key] !== null && obj[key] !== undefined) {
-      result[key] = obj[key];
+      if (typeof obj[key] === 'number') {
+        result[key] = String(obj[key]);
+      } else {
+        result[key] = obj[key];
+      }
     }
   }
   return result;
