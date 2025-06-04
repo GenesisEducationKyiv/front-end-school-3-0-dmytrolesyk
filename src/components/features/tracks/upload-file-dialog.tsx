@@ -19,7 +19,7 @@ type UploadFileDialogProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   onFormSubmit: () => void;
-  trackSlug?: string;
+  trackSlug?: string | undefined;
 };
 
 export function UploadFileDialog({

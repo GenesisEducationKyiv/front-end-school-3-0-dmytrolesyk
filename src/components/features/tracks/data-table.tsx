@@ -79,8 +79,7 @@ export function DataTable<TData, TValue>({
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map(row => (
               <TableRow
-                // @ts-expect-error to fix typing later
-                data-testid={`track-item-${row.original.id as string}`}
+                data-testid={`track-item-${String(row.id)}`}
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
               >

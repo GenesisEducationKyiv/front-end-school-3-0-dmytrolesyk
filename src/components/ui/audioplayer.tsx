@@ -9,7 +9,10 @@ const formatTime = (seconds: number) => {
   return `${String(minutes)}:${paddedSeconds}`;
 };
 
-const createGradients = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
+const createGradients = (
+  canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
+): [CanvasGradient, CanvasGradient] => {
   const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 1.35);
   gradient.addColorStop(0, '#656666');
   gradient.addColorStop((canvas.height * 0.7) / canvas.height, '#656666');

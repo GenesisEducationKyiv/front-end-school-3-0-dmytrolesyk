@@ -3,8 +3,8 @@ import { cn } from '@/lib/utils';
 
 type FieldErrorProps = {
   dataTestId: string;
-  error?: string;
-  className?: string;
+  error?: string | undefined;
+  className?: string | undefined;
 };
 
 export function FieldError({ error, className, dataTestId }: FieldErrorProps) {

@@ -20,3 +20,15 @@ export const validateApiResponseSchema = <T>(
 ) => {
   return validateSchema(schema, data, `API response for ${endpoint} has incorrect format`);
 };
+
+export const cleanSearchParams = (
+  obj: Record<string, string | null | undefined>,
+): Record<string, string> => {
+  const result: Record<string, string> = {};
+  for (const key in obj) {
+    if (obj[key] !== null && obj[key] !== undefined) {
+      result[key] = obj[key];
+    }
+  }
+  return result;
+};

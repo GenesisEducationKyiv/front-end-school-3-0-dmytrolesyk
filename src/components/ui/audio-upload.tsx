@@ -55,7 +55,7 @@ export function AudioFileUploadInput({ value, onChange, disabled = false }: File
     setIsDragging(false);
 
     const file = e.dataTransfer.files[0];
-    if (file.type.startsWith('audio/')) {
+    if (file && file.type.startsWith('audio/')) {
       handleFileChange(file);
     }
   };

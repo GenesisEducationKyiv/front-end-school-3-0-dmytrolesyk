@@ -2,16 +2,21 @@ import { keepPreviousData, queryOptions, useMutation } from '@tanstack/react-que
 import { AxiosError } from 'axios';
 import { apiClient } from './apiClient';
 import { SortingOrder, TrackI, TracksI } from '@/types/types';
-import { removeNullishValues } from '../utils';
 import { TrackSchema, TracksResponseSchema } from '@/types/schemas';
-import { formatError, getData, ErrorResponse, validateApiResponseSchema } from './networkUtils';
+import {
+  formatError,
+  getData,
+  ErrorResponse,
+  validateApiResponseSchema,
+  cleanSearchParams,
+} from './networkUtils';
 
 export const getTracks = (params?: {
   page: number;
   limit: number;
-  sort?: string;
-  order?: SortingOrder;
-  search?: string;
+  sort?: string | undefined;
+  order?: SortingOrder | undefined;
+  search?: string | undefined;
 }) => {
   const { page = 0, limit = 10, sort, order, search } = params ?? {};
 
@@ -19,7 +24,7 @@ export const getTracks = (params?: {
     queryKey: ['GET_TRACKS', page, limit, sort, order, search],
     queryFn: async (): Promise<TracksI> => {
       const searchParams = new URLSearchParams(
-        removeNullishValues({ page: String(page), limit: String(limit), sort, order, search }),
+        cleanSearchParams({ page: String(page), limit: String(limit), sort, order, search }),
       );
 
       const data = await getData(apiClient.get<TracksI>(`/tracks?${searchParams.toString()}`));
@@ -68,7 +73,11 @@ export const useAddTrack = ({
         coverImage,
       });
     },
-    onSuccess,
+    onSuccess: () => {
+      if (onSuccess) {
+        onSuccess();
+      }
+    },
     onError: (e: AxiosError<ErrorResponse>) => {
       if (onError) {
         onError(formatError(e));
@@ -97,7 +106,11 @@ export const useEditTrack = ({
         coverImage,
       });
     },
-    onSuccess,
+    onSuccess: () => {
+      if (onSuccess) {
+        onSuccess();
+      }
+    },
     onError: (e: AxiosError<ErrorResponse>) => {
       if (onError) {
         onError(formatError(e));
@@ -117,7 +130,11 @@ export const useDeleteTrack = ({
     mutationFn: (trackId: string) => {
       return apiClient.delete(`tracks/${trackId}`);
     },
-    onSuccess,
+    onSuccess: () => {
+      if (onSuccess) {
+        onSuccess();
+      }
+    },
     onError: (e: AxiosError<ErrorResponse>) => {
       if (onError) {
         onError(formatError(e));
@@ -139,7 +156,11 @@ export const useBulkDeleteTracks = ({
         ids: trackIds,
       });
     },
-    onSuccess,
+    onSuccess: () => {
+      if (onSuccess) {
+        onSuccess();
+      }
+    },
     onError: (e: AxiosError<ErrorResponse>) => {
       if (onError) {
         onError(formatError(e));
@@ -165,7 +186,11 @@ export const useUploadFile = ({
         },
       });
     },
-    onSuccess,
+    onSuccess: () => {
+      if (onSuccess) {
+        onSuccess();
+      }
+    },
     onError: (e: AxiosError<ErrorResponse>) => {
       if (onError) {
         onError(formatError(e));
@@ -185,7 +210,11 @@ export const useRemoveFile = ({
     mutationFn: (trackId: string) => {
       return apiClient.delete(`tracks/${trackId}/file`);
     },
-    onSuccess,
+    onSuccess: () => {
+      if (onSuccess) {
+        onSuccess();
+      }
+    },
     onError: (e: AxiosError<ErrorResponse>) => {
       if (onError) {
         onError(formatError(e));

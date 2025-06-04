@@ -44,7 +44,7 @@ type AddEditTrackDialogProps = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   onFormSubmit: () => void;
   onClose: () => void;
-  trackSlug?: string;
+  trackSlug?: string | undefined;
 };
 
 const onError = ({ message }: { message: string }) => {
