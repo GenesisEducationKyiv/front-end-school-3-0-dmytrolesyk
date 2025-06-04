@@ -60,7 +60,7 @@ export function AddEditTrackDialog({
 }: AddEditTrackDialogProps) {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
-  const { data: genres = [] } = useQuery(getGenres());
+  const { data: genres = [], isLoading: getGenresLoading } = useQuery(getGenres());
   const { data: trackToEdit, isLoading: getTrackLoading } = useQuery(getTrack(trackSlug));
 
   const editMode = Boolean(trackToEdit);
@@ -97,7 +97,7 @@ export function AddEditTrackDialog({
     },
   });
 
-  const isLoading = addTrackPending || getTrackLoading || editTrackPending;
+  const isLoading = addTrackPending || getTrackLoading || editTrackPending || getGenresLoading;
 
   return (
     <Dialog
