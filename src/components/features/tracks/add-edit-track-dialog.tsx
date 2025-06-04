@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useForm } from '@tanstack/react-form';
 import { Button } from '@/components/ui/button';
 import {
@@ -60,7 +60,7 @@ export function AddEditTrackDialog({
 }: AddEditTrackDialogProps) {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
-  const { data: genres = [] } = useSuspenseQuery(getGenres());
+  const { data: genres = [] } = useQuery(getGenres());
   const { data: trackToEdit, isLoading: getTrackLoading } = useQuery(getTrack(trackSlug));
 
   const editMode = Boolean(trackToEdit);
