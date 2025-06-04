@@ -24,3 +24,5 @@ export const TracksResponseSchema = z.object({
   data: z.array(TrackSchema),
   meta: MetadataSchema,
 });
+
+export const GenresResponseSchema = z.array(z.string());

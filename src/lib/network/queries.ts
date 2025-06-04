@@ -1,8 +1,8 @@
 import { keepPreviousData, queryOptions, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { apiClient } from './apiClient';
-import { SortingOrder, TrackI, TracksI } from '@/types/types';
-import { TrackSchema, TracksResponseSchema } from '@/types/schemas';
+import { GenresI, SortingOrder, TrackI, TracksI } from '@/types/types';
+import { GenresResponseSchema, TrackSchema, TracksResponseSchema } from '@/types/schemas';
 import {
   formatError,
   getData,
@@ -23,13 +23,14 @@ export const getTracks = (params?: {
   return queryOptions({
     queryKey: ['GET_TRACKS', page, limit, sort, order, search],
     queryFn: async (): Promise<TracksI> => {
+      const endpoint = '/tracks';
       const searchParams = new URLSearchParams(
         cleanSearchParams({ page: String(page), limit: String(limit), sort, order, search }),
       );
 
-      const data = await getData(apiClient.get<TracksI>(`/tracks?${searchParams.toString()}`));
+      const data = await getData(apiClient.get<TracksI>(`${endpoint}?${searchParams.toString()}`));
 
-      return validateApiResponseSchema('/tracks', TracksResponseSchema, data);
+      return validateApiResponseSchema(endpoint, TracksResponseSchema, data);
     },
     placeholderData: keepPreviousData,
   });
@@ -52,7 +53,11 @@ export const getTrack = (trackSlug?: string) =>
 export const getGenres = () =>
   queryOptions({
     queryKey: ['GET_GENRES'],
-    queryFn: (): Promise<string[]> => getData(apiClient.get('/genres')),
+    queryFn: async (): Promise<GenresI> => {
+      const endpoint = '/genres';
+      const data = await getData(apiClient.get<GenresI>(endpoint));
+      return validateApiResponseSchema(endpoint, GenresResponseSchema, data);
+    },
   });
 
 export const useAddTrack = ({

@@ -18,7 +18,7 @@ export const validateApiResponseSchema = <T>(
   schema: z.ZodSchema<T>,
   data: unknown,
 ) => {
-  return validateSchema(schema, data, `API response for ${endpoint} has incorrect format`);
+  return validateSchema(schema, data, `API response for ${endpoint} has unexpeced format`);
 };
 
 export const cleanSearchParams = (
