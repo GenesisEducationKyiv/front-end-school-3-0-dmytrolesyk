@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import { useForm } from '@tanstack/react-form';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -11,15 +11,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
-import { getGenres, useAddTrack, getTrack, useEditTrack } from '@/lib/network/queries';
-import { ConfirmDialog } from './confirm-dialog';
-import { TrackSchema } from '@/types/schemas';
+} from '@/ui/dialog';
+import { Input } from '@/ui/input';
+import { Label } from '@/ui/label';
+import { Spinner } from '@/ui/spinner';
+import { getGenres, useAddTrack, getTrack, useEditTrack } from '@/features/tracks/lib/queries';
+import { ConfirmDialog } from '../../../ui/confirm-dialog';
+import { TrackSchema } from '@/features/tracks/lib/schemas';
 import { GenresTagInput } from './genres-input';
-import { FieldError } from '@/components/ui/field-error';
+import { FieldError } from '@/ui/field-error';
 
 const TrackFormSchema = TrackSchema.pick({
   title: true,
@@ -39,13 +39,13 @@ const defaultTrack: TrackForm = {
   genres: [],
 };
 
-type AddEditTrackDialogProps = {
+interface AddEditTrackDialogProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   onFormSubmit: () => void;
   onClose: () => void;
-  trackSlug?: string | undefined;
-};
+  trackSlug: string;
+}
 
 const onError = ({ message }: { message: string }) => {
   toast.error(<p data-testid="toast-error">{message}</p>);
@@ -60,12 +60,12 @@ export function AddEditTrackDialog({
 }: AddEditTrackDialogProps) {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
-  const { data: genres = [], isLoading: getGenresLoading } = useQuery(getGenres());
-  const { data: trackToEdit, isLoading: getTrackLoading } = useQuery(getTrack(trackSlug));
+  const { data: genres = [], isLoading: isGetGenresLoading } = useQuery(getGenres());
+  const { data: trackToEdit, isLoading: isGetTrackLoading } = useQuery(getTrack(trackSlug));
 
   const editMode = Boolean(trackToEdit);
 
-  const { mutate: addTrack, isPending: addTrackPending } = useAddTrack({
+  const { mutate: addTrack, isPending: isAddTrackPending } = useAddTrack({
     onSuccess: () => {
       toast.success(<p data-testid="toast-success">Track was successfully added</p>);
       form.reset(defaultTrack);
@@ -74,7 +74,7 @@ export function AddEditTrackDialog({
     onError,
   });
 
-  const { mutate: editTrack, isPending: editTrackPending } = useEditTrack({
+  const { mutate: editTrack, isPending: isEditTrackPending } = useEditTrack({
     onSuccess: () => {
       toast.success(<p data-testid="toast-success">Track was successfully edited</p>);
       form.reset(defaultTrack);
@@ -97,7 +97,8 @@ export function AddEditTrackDialog({
     },
   });
 
-  const isLoading = addTrackPending || getTrackLoading || editTrackPending || getGenresLoading;
+  const isLoading =
+    isAddTrackPending || isGetTrackLoading || isEditTrackPending || isGetGenresLoading;
 
   return (
     <Dialog

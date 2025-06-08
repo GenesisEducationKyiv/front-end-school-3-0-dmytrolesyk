@@ -1,34 +1,38 @@
 import { keepPreviousData, queryOptions, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { apiClient } from './apiClient';
-import { GenresI, SortingOrder, TrackI, TracksI } from '@/types/types';
-import { GenresResponseSchema, TrackSchema, TracksResponseSchema } from '@/types/schemas';
+import { apiClient } from '../../../lib/network/apiClient';
+import { GenresI, SortingOrder, TrackI, TracksResponseI } from '@/features/tracks/lib/types';
+import {
+  GenresResponseSchema,
+  TrackSchema,
+  TracksResponseSchema,
+} from '@/features/tracks/lib/schemas';
 import {
   formatError,
   getData,
   ErrorResponse,
   validateApiResponseSchema,
   cleanSearchParams,
-} from './networkUtils';
+} from '../../../lib/network/networkUtils';
 
-export const getTracks = (params?: {
+export const getTracks = (params: {
   page: number;
   limit: number;
   sort?: string | undefined;
   order?: SortingOrder | undefined;
   search?: string | undefined;
 }) => {
-  const { page = 0, limit = 10, sort, order, search } = params ?? {};
+  const { page = 0, limit = 10, sort, order, search } = params;
 
   return queryOptions({
     queryKey: ['GET_TRACKS', page, limit, sort, order, search],
-    queryFn: async (): Promise<TracksI> => {
+    queryFn: async (): Promise<TracksResponseI> => {
       const endpoint = '/tracks';
       const searchParams = new URLSearchParams(
-        cleanSearchParams({ page: page, limit: limit, sort, order, search }),
-      );
+        cleanSearchParams({ page, limit, sort, order, search }),
+      ).toString();
 
-      const data = await getData(apiClient.get<TracksI>(`${endpoint}?${searchParams.toString()}`));
+      const data = await getData(apiClient.get<TracksResponseI>(`${endpoint}?${searchParams}`));
 
       return validateApiResponseSchema(endpoint, TracksResponseSchema, data);
     },
@@ -36,13 +40,10 @@ export const getTracks = (params?: {
   });
 };
 
-export const getTrack = (trackSlug?: string) =>
+export const getTrack = (trackSlug: string) =>
   queryOptions({
     queryKey: ['GET_TRACK', trackSlug],
     queryFn: async (): Promise<TrackI | null> => {
-      if (!trackSlug) {
-        return null;
-      }
       const endpoint = `tracks/${trackSlug}`;
       const data = await getData(apiClient.get<TrackI>(endpoint));
 
@@ -64,8 +65,8 @@ export const useAddTrack = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: (params: Pick<TrackI, 'title' | 'artist' | 'album' | 'genres' | 'coverImage'>) => {
@@ -78,15 +79,9 @@ export const useAddTrack = ({
         coverImage,
       });
     },
-    onSuccess: () => {
-      if (onSuccess) {
-        onSuccess();
-      }
-    },
+    onSuccess,
     onError: (e: AxiosError<ErrorResponse>) => {
-      if (onError) {
-        onError(formatError(e));
-      }
+      onError(formatError(e));
     },
   });
 };
@@ -95,8 +90,8 @@ export const useEditTrack = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: (
@@ -111,15 +106,9 @@ export const useEditTrack = ({
         coverImage,
       });
     },
-    onSuccess: () => {
-      if (onSuccess) {
-        onSuccess();
-      }
-    },
+    onSuccess,
     onError: (e: AxiosError<ErrorResponse>) => {
-      if (onError) {
-        onError(formatError(e));
-      }
+      onError(formatError(e));
     },
   });
 };
@@ -128,18 +117,14 @@ export const useDeleteTrack = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: (trackId: string) => {
       return apiClient.delete(`tracks/${trackId}`);
     },
-    onSuccess: () => {
-      if (onSuccess) {
-        onSuccess();
-      }
-    },
+    onSuccess,
     onError: (e: AxiosError<ErrorResponse>) => {
       if (onError) {
         onError(formatError(e));
@@ -152,8 +137,8 @@ export const useBulkDeleteTracks = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: (trackIds: string[]) => {
@@ -161,15 +146,9 @@ export const useBulkDeleteTracks = ({
         ids: trackIds,
       });
     },
-    onSuccess: () => {
-      if (onSuccess) {
-        onSuccess();
-      }
-    },
+    onSuccess,
     onError: (e: AxiosError<ErrorResponse>) => {
-      if (onError) {
-        onError(formatError(e));
-      }
+      onError(formatError(e));
     },
   });
 };
@@ -178,8 +157,8 @@ export const useUploadFile = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: ({ trackId, file }: { trackId: string; file: File }) => {
@@ -191,15 +170,9 @@ export const useUploadFile = ({
         },
       });
     },
-    onSuccess: () => {
-      if (onSuccess) {
-        onSuccess();
-      }
-    },
+    onSuccess,
     onError: (e: AxiosError<ErrorResponse>) => {
-      if (onError) {
-        onError(formatError(e));
-      }
+      onError(formatError(e));
     },
   });
 };
@@ -208,22 +181,16 @@ export const useRemoveFile = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: (trackId: string) => {
       return apiClient.delete(`tracks/${trackId}/file`);
     },
-    onSuccess: () => {
-      if (onSuccess) {
-        onSuccess();
-      }
-    },
+    onSuccess,
     onError: (e: AxiosError<ErrorResponse>) => {
-      if (onError) {
-        onError(formatError(e));
-      }
+      onError(formatError(e));
     },
   });
 };

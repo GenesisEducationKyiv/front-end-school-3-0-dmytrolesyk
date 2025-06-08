@@ -1,10 +1,13 @@
 import { Pencil, Settings, Trash2 } from 'lucide-react';
 import { ColumnDef } from '@tanstack/react-table';
-import { AudioPlayer } from '@/components/ui/audioplayer';
-import { Button } from '@/components/ui/button';
-import { TrackData, TrackI } from '@/types/types';
-import { Input } from '@/components/ui/input';
+import { AudioPlayer } from '@/ui/audioplayer';
+import { Button } from '@/ui/button';
+import { TrackI } from '@/features/tracks/lib/types';
+import { Input } from '@/ui/input';
 import { SortingButton } from './sorting-button';
+import { isValidInputValue } from '@/lib/type-guards';
+
+type TrackData = Pick<TrackI, 'id' | 'slug'>;
 
 export const createColumns = ({
   onEdit,
@@ -61,6 +64,8 @@ export const createColumns = ({
     id: 'title',
     accessorKey: 'title',
     header: ({ column }) => {
+      const filterValue = column.getFilterValue();
+      const value = isValidInputValue(filterValue) ? filterValue : '';
       return (
         <div className="flex-col">
           <SortingButton title="Title" onClick={column.getToggleSortingHandler()} />
@@ -68,7 +73,7 @@ export const createColumns = ({
             <Input
               data-testid="filter-title"
               placeholder="Filter titles..."
-              value={(column.getFilterValue() ?? '') as string}
+              value={value}
               onChange={event => {
                 column.setFilterValue(event.target.value);
               }}
@@ -86,6 +91,8 @@ export const createColumns = ({
     id: 'artist',
     accessorKey: 'artist',
     header: ({ column }) => {
+      const filterValue = column.getFilterValue();
+      const value = isValidInputValue(filterValue) ? filterValue : '';
       return (
         <div>
           <SortingButton title="Artist" onClick={column.getToggleSortingHandler()} />
@@ -93,7 +100,7 @@ export const createColumns = ({
             <Input
               data-testid="filter-artist"
               placeholder="Filter artists..."
-              value={(column.getFilterValue() ?? '') as string}
+              value={value}
               onChange={event => {
                 column.setFilterValue(event.target.value);
               }}
@@ -111,6 +118,8 @@ export const createColumns = ({
     id: 'album',
     accessorKey: 'album',
     header: ({ column }) => {
+      const filterValue = column.getFilterValue();
+      const value = isValidInputValue(filterValue) ? filterValue : '';
       return (
         <div>
           <SortingButton title="Album" onClick={column.getToggleSortingHandler()} />
@@ -118,7 +127,7 @@ export const createColumns = ({
             <Input
               data-testid="filter-album "
               placeholder="Filter albums..."
-              value={(column.getFilterValue() ?? '') as string}
+              value={value}
               onChange={event => {
                 column.setFilterValue(event.target.value);
               }}

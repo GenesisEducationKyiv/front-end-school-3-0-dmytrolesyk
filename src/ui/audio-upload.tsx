@@ -1,6 +1,6 @@
 import { useCallback, useState, useRef } from 'react';
 import { FileUp, X, Music, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/ui/button';
 import { cn } from '@/lib/utils';
 
 interface FileUploadInputProps {

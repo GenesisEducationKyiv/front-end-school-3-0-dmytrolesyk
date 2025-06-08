@@ -8,14 +8,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@/ui/alert-dialog';
 
-type ConfirmDialogProps = {
+export interface ConfirmDialogProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   onConfirm: () => void;
   message: string;
-};
+}
 
 export function ConfirmDialog({ open, setOpen, message, onConfirm }: ConfirmDialogProps) {
   return (

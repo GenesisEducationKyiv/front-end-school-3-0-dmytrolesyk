@@ -1,11 +1,11 @@
 import { AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-type FieldErrorProps = {
+interface FieldErrorProps {
   dataTestId: string;
   error?: string | undefined;
   className?: string | undefined;
-};
+}
 
 export function FieldError({ error, className, dataTestId }: FieldErrorProps) {
   if (!error) return null;

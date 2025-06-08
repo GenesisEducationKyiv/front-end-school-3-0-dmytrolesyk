@@ -1,26 +1,20 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { getTrack, useRemoveFile, useUploadFile } from '@/lib/network/queries';
-import { AudioFileUploadInput } from '@/components/ui/audio-upload';
-import { Spinner } from '@/components/ui/spinner';
-import { AudioPlayer } from '@/components/ui/audioplayer';
-import { ConfirmDialog } from './confirm-dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/ui/dialog';
+import { getTrack, useRemoveFile, useUploadFile } from '@/features/tracks/lib/queries';
+import { Button } from '@/ui/button';
+import { AudioFileUploadInput } from '@/ui/audio-upload';
+import { Spinner } from '@/ui/spinner';
+import { AudioPlayer } from '@/ui/audioplayer';
+import { ConfirmDialog } from '@/ui/confirm-dialog';
 
-type UploadFileDialogProps = {
+interface UploadFileDialogProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   onFormSubmit: () => void;
-  trackSlug?: string | undefined;
-};
+  trackSlug: string;
+}
 
 export function UploadFileDialog({
   open,
@@ -30,7 +24,9 @@ export function UploadFileDialog({
 }: UploadFileDialogProps) {
   const [file, setFile] = useState<File | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+
   const { data: trackToEdit, isLoading } = useQuery(getTrack(trackSlug));
+
   const { mutate: upload, isPending: isUploading } = useUploadFile({
     onSuccess: () => {
       onFormSubmit();
@@ -103,8 +99,8 @@ export function UploadFileDialog({
             </div>
           ) : (
             <AudioFileUploadInput
-              onChange={f => {
-                setFile(f);
+              onChange={file => {
+                setFile(file);
               }}
             />
           )}

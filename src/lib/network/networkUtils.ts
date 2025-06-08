@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
-import { validateSchema } from '@/lib/utils';
 import { z } from 'zod';
+import { validateSchema } from '@/lib/utils';
+import { isValidSearchParam } from '@/lib/type-guards';
 
 export type ErrorResponse = { error?: string };
 
@@ -18,7 +19,7 @@ export const validateApiResponseSchema = <T>(
   schema: z.ZodSchema<T>,
   data: unknown,
 ) => {
-  return validateSchema(schema, data, `API response for ${endpoint} has unexpeced format`);
+  return validateSchema(schema, data, `API response for ${endpoint} has unexpected format`);
 };
 
 export const cleanSearchParams = (
@@ -26,11 +27,12 @@ export const cleanSearchParams = (
 ): Record<string, string> => {
   const result: Record<string, string> = {};
   for (const key in obj) {
-    if (obj[key] !== null && obj[key] !== undefined) {
-      if (typeof obj[key] === 'number') {
-        result[key] = String(obj[key]);
+    const value = obj[key];
+    if (isValidSearchParam(value)) {
+      if (typeof value === 'number') {
+        result[key] = String(value);
       } else {
-        result[key] = obj[key];
+        result[key] = value;
       }
     }
   }
