@@ -1,8 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import axiosRetry from 'axios-retry';
-import { getEnvValue } from '@/lib/system';
 
-const BASE_API_URL = getEnvValue('API_HOST');
+const BASE_API_URL = import.meta.env['VITE_API_HOST'];
 
 axiosRetry(axios, { retries: 1 });
 

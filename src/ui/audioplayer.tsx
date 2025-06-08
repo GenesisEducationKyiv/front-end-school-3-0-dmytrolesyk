@@ -5,11 +5,14 @@ import WaveSurfer from 'wavesurfer.js';
 const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
   const secondsRemainder = Math.round(seconds) % 60;
-  const paddedSeconds = `0${secondsRemainder}`.slice(-2);
-  return `${minutes}:${paddedSeconds}`;
+  const paddedSeconds = `0${String(secondsRemainder)}`.slice(-2);
+  return `${String(minutes)}:${paddedSeconds}`;
 };
 
-const createGradients = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
+const createGradients = (
+  canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
+): [CanvasGradient, CanvasGradient] => {
   const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 1.35);
   gradient.addColorStop(0, '#656666');
   gradient.addColorStop((canvas.height * 0.7) / canvas.height, '#656666');
@@ -54,16 +57,16 @@ export function AudioPlayer({ fileName, trackId }: { fileName: string; trackId: 
             url: getFileUrl(fileName),
           });
 
-          wsRef.current?.on('interaction', () => {
-            wsRef.current?.playPause();
+          wsRef.current.on('interaction', () => {
+            void wsRef.current?.playPause();
           });
 
-          wsRef.current?.on('decode', duration => {
+          wsRef.current.on('decode', duration => {
             if (durationRef.current) {
               durationRef.current.textContent = formatTime(duration);
             }
           });
-          wsRef.current?.on('timeupdate', currentTime => {
+          wsRef.current.on('timeupdate', currentTime => {
             if (timeRef.current) {
               timeRef.current.textContent = formatTime(currentTime);
             }
@@ -74,14 +77,14 @@ export function AudioPlayer({ fileName, trackId }: { fileName: string; trackId: 
         }
       }
     }
-  }, []);
+  }, [fileName]);
 
   return (
     <div
       data-testid={`audio-player-${trackId}`}
       onPointerMove={e => {
         if (hoverRef.current) {
-          hoverRef.current.style.width = `${e.nativeEvent.offsetX}px`;
+          hoverRef.current.style.width = `${String(e.nativeEvent.offsetX)}px`;
         }
       }}
       ref={waveformRef}

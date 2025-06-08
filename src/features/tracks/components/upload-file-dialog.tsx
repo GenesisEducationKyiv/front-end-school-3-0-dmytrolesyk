@@ -1,26 +1,20 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { getTrack, useRemoveFile, useUploadFile } from '@/lib/network/queries';
-import { AudioFileUploadInput } from '@/components/ui/audio-upload';
-import { Spinner } from '@/components/ui/spinner';
-import { AudioPlayer } from '@/components/ui/audioplayer';
-import { ConfirmDialog } from './confirm-dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/ui/dialog';
+import { getTrack, useRemoveFile, useUploadFile } from '@/features/tracks/lib/queries';
+import { Button } from '@/ui/button';
+import { AudioFileUploadInput } from '@/ui/audio-upload';
+import { Spinner } from '@/ui/spinner';
+import { AudioPlayer } from '@/ui/audioplayer';
+import { ConfirmDialog } from '@/ui/confirm-dialog';
 
-type UploadFileDialogProps = {
+interface UploadFileDialogProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   onFormSubmit: () => void;
-  trackSlug?: string;
-};
+  trackSlug: string;
+}
 
 export function UploadFileDialog({
   open,
@@ -30,7 +24,9 @@ export function UploadFileDialog({
 }: UploadFileDialogProps) {
   const [file, setFile] = useState<File | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+
   const { data: trackToEdit, isLoading } = useQuery(getTrack(trackSlug));
+
   const { mutate: upload, isPending: isUploading } = useUploadFile({
     onSuccess: () => {
       onFormSubmit();
@@ -53,13 +49,13 @@ export function UploadFileDialog({
 
   const uploadFile = () => {
     if (trackToEdit && file) {
-      upload({ trackId: trackToEdit?.id, file });
+      upload({ trackId: trackToEdit.id, file });
     }
   };
 
   const removeFile = () => {
     if (trackToEdit) {
-      remove(trackToEdit?.id);
+      remove(trackToEdit.id);
     }
   };
 
@@ -90,7 +86,7 @@ export function UploadFileDialog({
             <div>
               {trackToEdit?.coverImage && (
                 <img
-                  src={trackToEdit?.coverImage}
+                  src={trackToEdit.coverImage}
                   alt="Cover preview"
                   className="mt-2 max-h-48 rounded col-span-3"
                 />
@@ -102,7 +98,11 @@ export function UploadFileDialog({
               <AudioPlayer trackId={trackToEdit.id} fileName={trackToEdit.audioFile} />
             </div>
           ) : (
-            <AudioFileUploadInput onChange={f => setFile(f)} />
+            <AudioFileUploadInput
+              onChange={file => {
+                setFile(file);
+              }}
+            />
           )}
           <DialogFooter>
             <Button

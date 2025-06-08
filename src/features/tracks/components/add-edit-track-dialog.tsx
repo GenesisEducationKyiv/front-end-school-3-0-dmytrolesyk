@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useForm } from '@tanstack/react-form';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -11,15 +11,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
-import { getGenres, useAddTrack, getTrack, useEditTrack } from '@/lib/network/queries';
-import { ConfirmDialog } from './confirm-dialog';
-import { TrackSchema } from '@/types/schemas';
+} from '@/ui/dialog';
+import { Input } from '@/ui/input';
+import { Label } from '@/ui/label';
+import { Spinner } from '@/ui/spinner';
+import { getGenres, useAddTrack, getTrack, useEditTrack } from '@/features/tracks/lib/queries';
+import { ConfirmDialog } from '../../../ui/confirm-dialog';
+import { TrackSchema } from '@/features/tracks/lib/schemas';
 import { GenresTagInput } from './genres-input';
-import { FieldError } from '@/components/ui/field-error';
+import { FieldError } from '@/ui/field-error';
 
 const TrackFormSchema = TrackSchema.pick({
   title: true,
@@ -39,13 +39,13 @@ const defaultTrack: TrackForm = {
   genres: [],
 };
 
-type AddEditTrackDialogProps = {
+interface AddEditTrackDialogProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   onFormSubmit: () => void;
   onClose: () => void;
-  trackSlug?: string;
-};
+  trackSlug: string;
+}
 
 const onError = ({ message }: { message: string }) => {
   toast.error(<p data-testid="toast-error">{message}</p>);
@@ -60,12 +60,12 @@ export function AddEditTrackDialog({
 }: AddEditTrackDialogProps) {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
-  const { data: genres = [] } = useSuspenseQuery(getGenres());
-  const { data: trackToEdit, isLoading: getTrackLoading } = useQuery(getTrack(trackSlug));
+  const { data: genres = [], isLoading: isGetGenresLoading } = useQuery(getGenres());
+  const { data: trackToEdit, isLoading: isGetTrackLoading } = useQuery(getTrack(trackSlug));
 
   const editMode = Boolean(trackToEdit);
 
-  const { mutate: addTrack, isPending: addTrackPending } = useAddTrack({
+  const { mutate: addTrack, isPending: isAddTrackPending } = useAddTrack({
     onSuccess: () => {
       toast.success(<p data-testid="toast-success">Track was successfully added</p>);
       form.reset(defaultTrack);
@@ -74,7 +74,7 @@ export function AddEditTrackDialog({
     onError,
   });
 
-  const { mutate: editTrack, isPending: editTrackPending } = useEditTrack({
+  const { mutate: editTrack, isPending: isEditTrackPending } = useEditTrack({
     onSuccess: () => {
       toast.success(<p data-testid="toast-success">Track was successfully edited</p>);
       form.reset(defaultTrack);
@@ -90,14 +90,15 @@ export function AddEditTrackDialog({
     },
     onSubmit: ({ value: newTrack }) => {
       if (trackToEdit) {
-        editTrack({ id: trackToEdit?.id, ...newTrack });
+        editTrack({ id: trackToEdit.id, ...newTrack });
       } else {
         addTrack(newTrack);
       }
     },
   });
 
-  const isLoading = addTrackPending || getTrackLoading || editTrackPending;
+  const isLoading =
+    isAddTrackPending || isGetTrackLoading || isEditTrackPending || isGetGenresLoading;
 
   return (
     <Dialog
@@ -127,7 +128,7 @@ export function AddEditTrackDialog({
             onSubmit={e => {
               e.preventDefault();
               e.stopPropagation();
-              form.handleSubmit();
+              void form.handleSubmit();
             }}
           >
             <div className="grid gap-4 py-4">
@@ -142,7 +143,9 @@ export function AddEditTrackDialog({
                         id="title"
                         data-test-id="input-title"
                         onBlur={field.handleBlur}
-                        onChange={e => field.handleChange(e.target.value)}
+                        onChange={e => {
+                          field.handleChange(e.target.value);
+                        }}
                         value={field.state.value}
                         className="col-span-3"
                       />
@@ -168,7 +171,9 @@ export function AddEditTrackDialog({
                       </Label>
                       <Input
                         data-test-id="input-artist"
-                        onChange={e => field.handleChange(e.target.value)}
+                        onChange={e => {
+                          field.handleChange(e.target.value);
+                        }}
                         onBlur={field.handleBlur}
                         value={field.state.value}
                         id="artist"
@@ -196,7 +201,9 @@ export function AddEditTrackDialog({
                       </Label>
                       <Input
                         data-test-id="input-album"
-                        onChange={e => field.handleChange(e.target.value)}
+                        onChange={e => {
+                          field.handleChange(e.target.value);
+                        }}
                         value={field.state.value}
                         id="album"
                         className="col-span-3"
@@ -215,7 +222,9 @@ export function AddEditTrackDialog({
                       <div className="col-span-3">
                         <Input
                           data-test-id="input-cover-image"
-                          onChange={e => field.handleChange(e.target.value)}
+                          onChange={e => {
+                            field.handleChange(e.target.value);
+                          }}
                           onBlur={field.handleBlur}
                           value={field.state.value}
                           id="coverImage"
@@ -252,7 +261,9 @@ export function AddEditTrackDialog({
                         <GenresTagInput
                           value={field.state.value}
                           genres={genres}
-                          onChange={values => field.handleChange(values)}
+                          onChange={values => {
+                            field.handleChange(values);
+                          }}
                         />
                       </div>
                     </>

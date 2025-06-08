@@ -11,21 +11,13 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { MetaDataI } from '@/types/types';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/table';
 import { DataTablePagination } from './pagination';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  metaData: MetaDataI;
+  totalItems: number;
   pagination: PaginationState;
   onPaginationChange: OnChangeFn<PaginationState>;
   sorting: SortingState;
@@ -35,7 +27,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
-  metaData,
+  totalItems,
   pagination,
   onPaginationChange,
   sorting,
@@ -49,7 +41,7 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     manualSorting: true,
-    rowCount: metaData.total,
+    rowCount: totalItems,
     state: { pagination, sorting, columnFilters },
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
@@ -76,11 +68,10 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map(row => (
               <TableRow
-                // @ts-expect-error to fix typing later
-                data-testid={`track-item-${row.original.id}`}
+                data-testid={`track-item-${String(row.id)}`}
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
               >

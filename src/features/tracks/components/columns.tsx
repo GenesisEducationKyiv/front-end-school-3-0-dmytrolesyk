@@ -1,22 +1,13 @@
-import { ArrowUpDown, Pencil, Settings, Trash2 } from 'lucide-react';
+import { Pencil, Settings, Trash2 } from 'lucide-react';
 import { ColumnDef } from '@tanstack/react-table';
-import { AudioPlayer } from '@/components/ui/audioplayer';
-import { Button } from '@/components/ui/button';
-import { TrackData, TrackI } from '@/types/types';
-import { Input } from '@/components/ui/input';
+import { AudioPlayer } from '@/ui/audioplayer';
+import { Button } from '@/ui/button';
+import { TrackI } from '@/features/tracks/lib/types';
+import { Input } from '@/ui/input';
+import { SortingButton } from './sorting-button';
+import { isValidInputValue } from '@/lib/type-guards';
 
-const SortingButton = ({
-  title,
-  onClick,
-}: {
-  title: string;
-  onClick: undefined | ((event: unknown) => void);
-}) => (
-  <Button data-testid="sort-select" variant="ghost" className="cursor-pointer" onClick={onClick}>
-    {title}
-    <ArrowUpDown className="ml-2 h-4 w-4" />
-  </Button>
-);
+type TrackData = Pick<TrackI, 'id' | 'slug'>;
 
 export const createColumns = ({
   onEdit,
@@ -37,7 +28,9 @@ export const createColumns = ({
         <>
           <Button
             data-testid={`edit-track-${row.original.id}`}
-            onClick={() => onEdit(trackData)}
+            onClick={() => {
+              onEdit(trackData);
+            }}
             variant="ghost"
             className="cursor-pointer"
           >
@@ -45,7 +38,9 @@ export const createColumns = ({
           </Button>
           <Button
             data-testid={`upload-track-${row.original.id}`}
-            onClick={() => onConfigure(trackData)}
+            onClick={() => {
+              onConfigure(trackData);
+            }}
             variant="ghost"
             className="cursor-pointer"
           >
@@ -53,7 +48,9 @@ export const createColumns = ({
           </Button>
           <Button
             data-testid={`delete-track-${row.original.id}`}
-            onClick={() => onDelete(trackData)}
+            onClick={() => {
+              onDelete(trackData);
+            }}
             variant="ghost"
             className="cursor-pointer"
           >
@@ -67,6 +64,8 @@ export const createColumns = ({
     id: 'title',
     accessorKey: 'title',
     header: ({ column }) => {
+      const filterValue = column.getFilterValue();
+      const value = isValidInputValue(filterValue) ? filterValue : '';
       return (
         <div className="flex-col">
           <SortingButton title="Title" onClick={column.getToggleSortingHandler()} />
@@ -74,8 +73,10 @@ export const createColumns = ({
             <Input
               data-testid="filter-title"
               placeholder="Filter titles..."
-              value={(column.getFilterValue() as string) ?? ''}
-              onChange={event => column.setFilterValue(event.target.value)}
+              value={value}
+              onChange={event => {
+                column.setFilterValue(event.target.value);
+              }}
               className="max-w-sm"
             />
           </div>
@@ -90,6 +91,8 @@ export const createColumns = ({
     id: 'artist',
     accessorKey: 'artist',
     header: ({ column }) => {
+      const filterValue = column.getFilterValue();
+      const value = isValidInputValue(filterValue) ? filterValue : '';
       return (
         <div>
           <SortingButton title="Artist" onClick={column.getToggleSortingHandler()} />
@@ -97,8 +100,10 @@ export const createColumns = ({
             <Input
               data-testid="filter-artist"
               placeholder="Filter artists..."
-              value={(column.getFilterValue() as string) ?? ''}
-              onChange={event => column.setFilterValue(event.target.value)}
+              value={value}
+              onChange={event => {
+                column.setFilterValue(event.target.value);
+              }}
               className="max-w-sm"
             />
           </div>
@@ -113,6 +118,8 @@ export const createColumns = ({
     id: 'album',
     accessorKey: 'album',
     header: ({ column }) => {
+      const filterValue = column.getFilterValue();
+      const value = isValidInputValue(filterValue) ? filterValue : '';
       return (
         <div>
           <SortingButton title="Album" onClick={column.getToggleSortingHandler()} />
@@ -120,8 +127,10 @@ export const createColumns = ({
             <Input
               data-testid="filter-album "
               placeholder="Filter albums..."
-              value={(column.getFilterValue() as string) ?? ''}
-              onChange={event => column.setFilterValue(event.target.value)}
+              value={value}
+              onChange={event => {
+                column.setFilterValue(event.target.value);
+              }}
               className="max-w-sm"
             />
           </div>

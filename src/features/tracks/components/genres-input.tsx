@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
+import { Badge } from '@/ui/badge';
+import { Button } from '@/ui/button';
 
 interface GenresTagInputProps {
   genres: string[];
@@ -41,7 +35,9 @@ export const GenresTagInput: React.FC<GenresTagInputProps> = ({ genres, value, o
             {genre}
             <Button
               type="button"
-              onClick={() => handleRemoveGenre(genre)}
+              onClick={() => {
+                handleRemoveGenre(genre);
+              }}
               variant="ghost"
               size="icon"
               className="h-4 w-4 p-0 ml-1"

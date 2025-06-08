@@ -1,81 +1,72 @@
 import { keepPreviousData, queryOptions, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { apiClient } from './apiClient';
-import { SortingOrder, TrackI, TracksI } from '@/types/types';
-import { removeNullishValues } from '../utils';
-import { getFileUrl } from './getFileUrl';
+import { apiClient } from '../../../lib/network/apiClient';
+import { GenresI, SortingOrder, TrackI, TracksResponseI } from '@/features/tracks/lib/types';
+import {
+  GenresResponseSchema,
+  TrackSchema,
+  TracksResponseSchema,
+} from '@/features/tracks/lib/schemas';
+import {
+  formatError,
+  getData,
+  ErrorResponse,
+  validateApiResponseSchema,
+  cleanSearchParams,
+} from '../../../lib/network/networkUtils';
 
-type ErrorResponse = { error?: string };
-
-const DEFAULT_ERROR = 'An error has occurred';
-
-const formatError = (e: AxiosError<ErrorResponse>) => ({
-  message: e.response?.data?.error ?? DEFAULT_ERROR,
-});
-
-const getData = <T>(promise: Promise<{ data: T }>): Promise<T> => promise.then(res => res?.data);
-
-export const getTracks = (params?: {
+export const getTracks = (params: {
   page: number;
   limit: number;
-  sort?: string;
-  order?: SortingOrder;
-  search?: string;
+  sort?: string | undefined;
+  order?: SortingOrder | undefined;
+  search?: string | undefined;
 }) => {
-  const { page = 0, limit = 10, sort, order, search } = params ?? {};
+  const { page = 0, limit = 10, sort, order, search } = params;
 
   return queryOptions({
     queryKey: ['GET_TRACKS', page, limit, sort, order, search],
-    queryFn: (): Promise<TracksI> => {
+    queryFn: async (): Promise<TracksResponseI> => {
+      const endpoint = '/tracks';
       const searchParams = new URLSearchParams(
-        removeNullishValues({ page: String(page), limit: String(limit), sort, order, search }),
-      );
+        cleanSearchParams({ page, limit, sort, order, search }),
+      ).toString();
 
-      return getData(apiClient.get(`/tracks?${searchParams.toString()}`));
+      const data = await getData(apiClient.get<TracksResponseI>(`${endpoint}?${searchParams}`));
+
+      return validateApiResponseSchema(endpoint, TracksResponseSchema, data);
     },
     placeholderData: keepPreviousData,
   });
 };
 
-export const getTrack = (trackSlug?: string) =>
+export const getTrack = (trackSlug: string) =>
   queryOptions({
     queryKey: ['GET_TRACK', trackSlug],
-    queryFn: async (): Promise<TrackI | null> =>
-      trackSlug ? getData(apiClient.get(`tracks/${trackSlug}`)) : null,
+    queryFn: async (): Promise<TrackI | null> => {
+      const endpoint = `tracks/${trackSlug}`;
+      const data = await getData(apiClient.get<TrackI>(endpoint));
+
+      return validateApiResponseSchema(endpoint, TrackSchema, data);
+    },
   });
-
-// export const getFile = (fileName?: string) =>
-//   queryOptions({
-//     queryKey: ['GET_FILE'],
-//     queryFn: async (): Promise<File | null> => {
-//       if (!fileName) return null;
-//       const response = await getData<Blob>(
-//         apiClient.get(getFileUrl(fileName), { responseType: 'blob' }),
-//       );
-
-//       const blob = new Blob([response]);
-
-//       const file = new File([blob], fileName, {
-//         type: blob.type || 'audio/mpeg',
-//         lastModified: new Date().getTime(),
-//       });
-
-//       return file;
-//     },
-//   });
 
 export const getGenres = () =>
   queryOptions({
     queryKey: ['GET_GENRES'],
-    queryFn: (): Promise<string[]> => getData(apiClient.get('/genres')),
+    queryFn: async (): Promise<GenresI> => {
+      const endpoint = '/genres';
+      const data = await getData(apiClient.get<GenresI>(endpoint));
+      return validateApiResponseSchema(endpoint, GenresResponseSchema, data);
+    },
   });
 
 export const useAddTrack = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: (params: Pick<TrackI, 'title' | 'artist' | 'album' | 'genres' | 'coverImage'>) => {
@@ -90,9 +81,7 @@ export const useAddTrack = ({
     },
     onSuccess,
     onError: (e: AxiosError<ErrorResponse>) => {
-      if (onError) {
-        onError(formatError(e));
-      }
+      onError(formatError(e));
     },
   });
 };
@@ -101,8 +90,8 @@ export const useEditTrack = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: (
@@ -119,9 +108,7 @@ export const useEditTrack = ({
     },
     onSuccess,
     onError: (e: AxiosError<ErrorResponse>) => {
-      if (onError) {
-        onError(formatError(e));
-      }
+      onError(formatError(e));
     },
   });
 };
@@ -130,8 +117,8 @@ export const useDeleteTrack = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: (trackId: string) => {
@@ -150,8 +137,8 @@ export const useBulkDeleteTracks = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: (trackIds: string[]) => {
@@ -161,9 +148,7 @@ export const useBulkDeleteTracks = ({
     },
     onSuccess,
     onError: (e: AxiosError<ErrorResponse>) => {
-      if (onError) {
-        onError(formatError(e));
-      }
+      onError(formatError(e));
     },
   });
 };
@@ -172,8 +157,8 @@ export const useUploadFile = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: ({ trackId, file }: { trackId: string; file: File }) => {
@@ -187,9 +172,7 @@ export const useUploadFile = ({
     },
     onSuccess,
     onError: (e: AxiosError<ErrorResponse>) => {
-      if (onError) {
-        onError(formatError(e));
-      }
+      onError(formatError(e));
     },
   });
 };
@@ -198,8 +181,8 @@ export const useRemoveFile = ({
   onSuccess,
   onError,
 }: {
-  onSuccess?: () => void;
-  onError?: (e: { message: string }) => void;
+  onSuccess: () => void;
+  onError: (e: { message: string }) => void;
 }) => {
   return useMutation({
     mutationFn: (trackId: string) => {
@@ -207,9 +190,7 @@ export const useRemoveFile = ({
     },
     onSuccess,
     onError: (e: AxiosError<ErrorResponse>) => {
-      if (onError) {
-        onError(formatError(e));
-      }
+      onError(formatError(e));
     },
   });
 };
