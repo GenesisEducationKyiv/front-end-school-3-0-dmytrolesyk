@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router';
-// import { TracksSearchParamsSchema } from '@/features/tracks/lib/schemas';
 import { TrackTableSkeleton } from '@/features/tracks/components/tracks-skeleton';
 import { TracksPage } from '@/features/tracks/tracks';
 import { TracksSearchParams } from '@/features/tracks/lib/types';
