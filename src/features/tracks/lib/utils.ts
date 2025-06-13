@@ -19,8 +19,8 @@ const parseNumber = (value: unknown, fallback: number): number => {
   );
 };
 
-export const parseSearchParams = (search: Record<string, unknown>): TracksSearchParams => {
-  const { page: rawPage, size: rawSize, sort: rawSort, order: rawOrder, q: rawQ } = search;
+export const parseSearchParams = (searchParams: Record<string, unknown>): TracksSearchParams => {
+  const { page: rawPage, size: rawSize, sort: rawSort, order: rawOrder, q: rawQ } = searchParams;
 
   const page = parseNumber(rawPage, 1);
   const size = parseNumber(rawSize, 10);
@@ -39,7 +39,7 @@ export const parseSearchParams = (search: Record<string, unknown>): TracksSearch
     O.toUndefined,
   );
 
-  const q = pipe(
+  const search = pipe(
     rawQ,
     v => (typeof v === 'string' && v.trim().length > 0 ? v.trim() : null),
     O.fromNullable,
@@ -51,6 +51,6 @@ export const parseSearchParams = (search: Record<string, unknown>): TracksSearch
     size,
     sort,
     order,
-    q,
+    q: search,
   };
 };

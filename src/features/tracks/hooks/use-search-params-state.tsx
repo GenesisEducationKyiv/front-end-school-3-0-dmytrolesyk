@@ -1,11 +1,6 @@
-import { toast } from 'sonner';
 import { getRouteApi } from '@tanstack/react-router';
 import { PaginationState, SortingState } from '@tanstack/react-table';
-import { TracksSearchParams } from '../lib/types';
-
-const onNavigationError = () => {
-  toast.error(<p data-testid="toast-error">Error has occurred, please try again</p>);
-};
+import { isValidSortValue } from '../lib/type-guards';
 
 export const useSearchParamsState = () => {
   const route = getRouteApi('/tracks');
@@ -16,31 +11,34 @@ export const useSearchParamsState = () => {
   const sortingState = sort ? [{ id: sort, desc: order === 'desc' }] : [];
 
   const updatePagination = (pagination: PaginationState) => {
-    navigate({
+    void navigate({
       search: prev => ({
         ...prev,
         page: pagination.pageIndex + 1,
         size: pagination.pageSize,
       }),
-    }).catch(onNavigationError);
+    });
   };
 
   const updateSorting = (sorting: SortingState) => {
     const sort = sorting.at(0);
-    const newSortParams = (
-      !sort
-        ? { sort: undefined, order: undefined }
-        : { sort: sort.id, order: sort.desc ? 'desc' : 'asc' }
-    ) as Pick<TracksSearchParams, 'sort' | 'order'>;
-    navigate({
-      search: prev => ({ ...prev, ...newSortParams }),
-    }).catch(onNavigationError);
+    if (!sort) {
+      void navigate({
+        search: prev => ({ ...prev, sort: undefined, order: undefined }),
+      });
+    } else {
+      const newSortValue = isValidSortValue(sort.id) ? sort.id : undefined;
+      const newSortOrder = sort.desc ? 'desc' : 'asc';
+      void navigate({
+        search: prev => ({ ...prev, sort: newSortValue, order: newSortOrder }),
+      });
+    }
   };
 
   const updateSearch = (searchString: string) => {
-    navigate({
+    void navigate({
       search: prev => ({ ...prev, q: searchString }),
-    }).catch(onNavigationError);
+    });
   };
 
   return {
