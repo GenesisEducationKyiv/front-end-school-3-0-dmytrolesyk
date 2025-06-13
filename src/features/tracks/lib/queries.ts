@@ -1,7 +1,7 @@
 import { keepPreviousData, queryOptions, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { apiClient } from '../../../lib/network/apiClient';
-import { GenresI, SortingOrder, TrackI, TracksResponseI } from '@/features/tracks/lib/types';
+import { GenresI, SortOrder, TrackI, TracksResponseI } from '@/features/tracks/lib/types';
 import {
   GenresResponseSchema,
   TrackSchema,
@@ -19,7 +19,7 @@ export const getTracks = (params: {
   page: number;
   limit: number;
   sort?: string | undefined;
-  order?: SortingOrder | undefined;
+  order?: SortOrder | undefined;
   search?: string | undefined;
 }) => {
   const { page = 0, limit = 10, sort, order, search } = params;

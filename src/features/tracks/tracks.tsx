@@ -1,10 +1,9 @@
 import { useMemo, useState } from 'react';
-import { PaginationState, SortingState } from '@tanstack/react-table';
 import { useQuery } from '@tanstack/react-query';
 import { DebounceInput } from 'react-debounce-input';
 import { createColumns } from '@/features/tracks/components/columns';
 import { DataTable } from '@/ui/data-table';
-import { SortingOrder, TrackI } from '@/features/tracks/lib/types';
+import { TrackI } from '@/features/tracks/lib/types';
 import { Input } from '@/ui/input';
 import { AddEditTrackDialog } from '@/features/tracks/components/add-edit-track-dialog';
 import { Button } from '@/ui/button';
@@ -12,36 +11,26 @@ import { UploadFileDialog } from '@/features/tracks/components/upload-file-dialo
 import { TrackTableSkeleton } from '@/features/tracks/components/tracks-skeleton';
 import { getTracks } from '@/features/tracks/lib/queries';
 import { DeleteTrackDialog } from '@/features/tracks/components/delete-track-dialog';
+import { useSearchParamsState } from './hooks/use-search-params-state';
 
-interface TrackProps {
-  page: number;
-  size: number;
-  sort: string | undefined;
-  order: SortingOrder | undefined;
-  search: string | undefined;
-  paginationState: PaginationState;
-  sortingState: SortingState;
-  updatePagination: (pagination: PaginationState) => void;
-  updateSorting: (sorting: SortingState) => void;
-  updateSearch: (searchString: string) => void;
-}
-
-export function Tracks({
-  page,
-  size,
-  sort,
-  order,
-  search,
-  paginationState,
-  sortingState,
-  updatePagination,
-  updateSorting,
-  updateSearch,
-}: TrackProps) {
+export function TracksPage() {
   const [addEditDialogOpen, setAddEditDialogOpen] = useState(false);
   const [uploadFileDialogOpen, setUploadFileDialogOpen] = useState(false);
   const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<Pick<TrackI, 'id' | 'slug'> | null>(null);
+
+  const {
+    page,
+    size,
+    sort,
+    order,
+    search,
+    paginationState,
+    sortingState,
+    updatePagination,
+    updateSorting,
+    updateSearch,
+  } = useSearchParamsState();
 
   const {
     data,
@@ -147,7 +136,7 @@ export function Tracks({
           }}
         />
       )}
-      {selectedTrack !== null && confirmDeleteDialogOpen && (
+      {selectedTrack && confirmDeleteDialogOpen && (
         <DeleteTrackDialog
           trackId={selectedTrack.id}
           open={confirmDeleteDialogOpen}
