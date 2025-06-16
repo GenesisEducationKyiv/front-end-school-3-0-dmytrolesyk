@@ -11,7 +11,7 @@ import { UploadFileDialog } from '@/features/tracks/components/upload-file-dialo
 import { TrackTableSkeleton } from '@/features/tracks/components/tracks-skeleton';
 import { getTracks } from '@/features/tracks/lib/queries';
 import { DeleteTrackDialog } from '@/features/tracks/components/delete-track-dialog';
-import { useSearchParamsState } from './hooks/use-search-params-state';
+import { useTracksPageSearchParamsState } from './hooks/use-search-params-state';
 
 export function TracksPage() {
   const [addEditDialogOpen, setAddEditDialogOpen] = useState(false);
@@ -30,7 +30,7 @@ export function TracksPage() {
     updatePagination,
     updateSorting,
     updateSearch,
-  } = useSearchParamsState();
+  } = useTracksPageSearchParamsState();
 
   const {
     data,

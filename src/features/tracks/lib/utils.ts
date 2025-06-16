@@ -51,6 +51,6 @@ export const parseSearchParams = (searchParams: Record<string, unknown>): Tracks
     size,
     sort,
     order,
-    q: search,
+    search,
   };
 };

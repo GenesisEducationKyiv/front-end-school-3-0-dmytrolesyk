@@ -1,9 +1,9 @@
-import { SortOrder, SortValue } from './types';
+import { SORT_ORDERS, SORT_VALUES, SortOrder, SortValue } from './types';
 
-export const isValidSortValue = (value: string): value is SortValue => {
-  return ['title', 'artist', 'album'].includes(value);
+export const isValidSortValue = (value: unknown): value is SortValue => {
+  return typeof value === 'string' && SORT_VALUES.includes(value as SortValue);
 };
 
-export const isValidSortOrder = (value: string): value is SortOrder => {
-  return ['asc', 'desc'].includes(value);
+export const isValidSortOrder = (value: unknown): value is SortOrder => {
+  return typeof value === 'string' && SORT_ORDERS.includes(value as SortOrder);
 };
