@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { DebounceInput } from 'react-debounce-input';
 import { createColumns } from '@/features/tracks/components/columns';
 import { DataTable } from '@/ui/data-table';
 import { TrackI } from '@/features/tracks/lib/types';
@@ -70,10 +69,8 @@ export function TracksPage() {
         Music Management App
       </h1>
       <div className="flex items-center py-4 justify-between">
-        <DebounceInput
+        <Input
           data-testid="search-input"
-          debounceTimeout={300}
-          element={Input}
           value={search}
           placeholder="Search tracks..."
           onChange={event => {
