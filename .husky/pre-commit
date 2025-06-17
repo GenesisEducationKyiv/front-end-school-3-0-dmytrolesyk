@@ -1,2 +1,2 @@
-npm run typecheck
-npm run lint
+pnpm run typecheck
+pnpm run lint
