@@ -4,6 +4,10 @@
 
 Github dependabot alert **_Vite's server.fs.deny bypassed with /. for files under project root #1 _**fixed by upgrading vite version to vite@6.3.5
 
+## **PNPM audit**
+
+`pnpm audit` command found no known vulnerabilities.
+
 ## Snyk scan
 
 - Snyk scan was performed using `snyk scan --dev` command.
