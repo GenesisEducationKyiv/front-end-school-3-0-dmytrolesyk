@@ -44,7 +44,7 @@ interface AddEditTrackDialogProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
   onFormSubmit: () => void;
   onClose: () => void;
-  trackSlug: string;
+  trackSlug: string | undefined;
 }
 
 const onError = ({ message }: { message: string }) => {
@@ -61,7 +61,10 @@ export function AddEditTrackDialog({
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   const { data: genres = [], isLoading: isGetGenresLoading } = useQuery(getGenres());
-  const { data: trackToEdit, isLoading: isGetTrackLoading } = useQuery(getTrack(trackSlug));
+  const { data: trackToEdit, isLoading: isGetTrackLoading } = useQuery({
+    ...getTrack(trackSlug ?? ''),
+    enabled: Boolean(trackSlug),
+  });
 
   const editMode = Boolean(trackToEdit);
 

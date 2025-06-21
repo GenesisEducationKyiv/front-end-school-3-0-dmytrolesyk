@@ -11,6 +11,7 @@ import { TrackTableSkeleton } from '@/features/tracks/components/tracks-skeleton
 import { getTracks } from '@/features/tracks/lib/queries';
 import { DeleteTrackDialog } from '@/features/tracks/components/delete-track-dialog';
 import { useTracksPageSearchParamsState } from './hooks/use-search-params-state';
+import { DebouncedInput } from '@/ui/debounced-input';
 
 export function TracksPage() {
   const [addEditDialogOpen, setAddEditDialogOpen] = useState(false);
@@ -69,7 +70,8 @@ export function TracksPage() {
         Music Management App
       </h1>
       <div className="flex items-center py-4 justify-between">
-        <Input
+        <DebouncedInput
+          wait={500}
           data-testid="search-input"
           value={search}
           placeholder="Search tracks..."
@@ -106,10 +108,10 @@ export function TracksPage() {
         data={data.data}
         totalItems={data.meta.total}
       />
-      {selectedTrack && addEditDialogOpen && (
+      {addEditDialogOpen && (
         <AddEditTrackDialog
           open={addEditDialogOpen}
-          trackSlug={selectedTrack.slug}
+          trackSlug={selectedTrack?.slug}
           setOpen={setAddEditDialogOpen}
           onClose={() => {
             setSelectedTrack(null);
