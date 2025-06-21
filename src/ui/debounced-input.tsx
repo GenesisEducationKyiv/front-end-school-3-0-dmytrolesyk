@@ -1,5 +1,5 @@
 import { Input } from '@/ui/input';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { Debouncer } from '@tanstack/react-pacer';
 
 interface DebouncedInputProps extends React.ComponentProps<typeof Input> {
