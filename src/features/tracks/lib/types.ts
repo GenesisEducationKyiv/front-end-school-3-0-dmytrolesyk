@@ -18,5 +18,5 @@ export interface TracksSearchParams {
   size: number;
   sort?: SortValue | undefined;
   order?: SortOrder | undefined;
-  search?: string | undefined;
+  q?: string | undefined;
 }

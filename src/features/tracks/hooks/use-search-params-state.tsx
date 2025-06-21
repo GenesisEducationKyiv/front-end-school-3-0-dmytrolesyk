@@ -1,10 +1,10 @@
 import { getRouteApi } from '@tanstack/react-router';
 import { PaginationState, SortingState } from '@tanstack/react-table';
-import { isValidSortValue } from '../lib/type-guards';
+import { isValidSortValue } from '@/features/tracks/lib/type-guards';
 
 export const useTracksPageSearchParamsState = () => {
   const route = getRouteApi('/tracks');
-  const { page, size, sort, order, search } = route.useSearch();
+  const { page, size, sort, order, q } = route.useSearch();
   const navigate = route.useNavigate();
 
   const paginationState = { pageIndex: page - 1, pageSize: size };
@@ -37,7 +37,9 @@ export const useTracksPageSearchParamsState = () => {
 
   const updateSearch = (searchString: string) => {
     void navigate({
-      search: prev => ({ ...prev, search: searchString }),
+      search: prev => {
+        return { ...prev, q: searchString };
+      },
     });
   };
 
@@ -46,7 +48,7 @@ export const useTracksPageSearchParamsState = () => {
     size,
     sort,
     order,
-    search,
+    search: q,
     paginationState,
     updatePagination,
     sortingState,
