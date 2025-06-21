@@ -1,5 +1,5 @@
 import { Input } from '@/ui/input';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { Debouncer } from '@tanstack/react-pacer';
 
 interface DebouncedInputProps extends React.ComponentProps<typeof Input> {
@@ -32,13 +32,10 @@ function DebouncedInput({ wait, value, onChange, ...props }: DebouncedInputProps
     };
   }, [onChangeDebouncer]);
 
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setInternalValue(e.target.value);
-      onChangeDebouncer.maybeExecute(e);
-    },
-    [onChangeDebouncer],
-  );
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInternalValue(e.target.value);
+    onChangeDebouncer.maybeExecute(e);
+  };
 
   return <Input value={internalValue} onChange={handleChange} {...props} />;
 }
