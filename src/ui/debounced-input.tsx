@@ -32,13 +32,10 @@ function DebouncedInput({ wait, value, onChange, ...props }: DebouncedInputProps
     };
   }, [onChangeDebouncer]);
 
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setInternalValue(e.target.value);
-      onChangeDebouncer.maybeExecute(e);
-    },
-    [onChangeDebouncer],
-  );
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInternalValue(e.target.value);
+    onChangeDebouncer.maybeExecute(e);
+  };
 
   return <Input value={internalValue} onChange={handleChange} {...props} />;
 }
