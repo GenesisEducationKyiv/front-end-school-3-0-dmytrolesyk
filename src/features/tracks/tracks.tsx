@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { createColumns } from '@/features/tracks/components/columns';
 import { DataTable } from '@/ui/data-table';
@@ -39,24 +39,20 @@ export function TracksPage() {
     refetch: refetchTracks,
   } = useQuery(getTracks({ page, limit: size, sort, order, search }));
 
-  const columns = useMemo(
-    () =>
-      createColumns({
-        onEdit: track => {
-          setActiveTrack(track);
-          setAddEditDialogOpen(true);
-        },
-        onConfigure: track => {
-          setActiveTrack(track);
-          setUploadFileDialogOpen(true);
-        },
-        onDelete: track => {
-          setActiveTrack(track);
-          setConfirmDeleteDialogOpen(true);
-        },
-      }),
-    [],
-  );
+  const columns = createColumns({
+    onEdit: track => {
+      setActiveTrack(track);
+      setAddEditDialogOpen(true);
+    },
+    onConfigure: track => {
+      setActiveTrack(track);
+      setUploadFileDialogOpen(true);
+    },
+    onDelete: track => {
+      setActiveTrack(track);
+      setConfirmDeleteDialogOpen(true);
+    },
+  });
 
   if (isLoading || !data) {
     return <TrackTableSkeleton />;
@@ -164,6 +160,7 @@ export function TracksPage() {
           setOpen={setConfirmDeleteDialogOpen}
           onConfirm={() => {
             void refetchTracks();
+            setActiveTrack(null);
             setConfirmDeleteDialogOpen(false);
           }}
         />
