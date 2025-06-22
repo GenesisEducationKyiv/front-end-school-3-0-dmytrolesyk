@@ -18,7 +18,7 @@ import { Spinner } from '@/ui/spinner';
 import { getGenres, useAddTrack, getTrack, useEditTrack } from '@/features/tracks/lib/queries';
 import { ConfirmDialog } from '@/ui/confirm-dialog';
 import { TrackSchema } from '@/features/tracks/lib/schemas';
-import { GenresTagInput } from './genres-input';
+import { GenresTagInput } from './genres-input/genres-input';
 import { FieldError } from '@/ui/field-error';
 
 const TrackFormSchema = TrackSchema.pick({

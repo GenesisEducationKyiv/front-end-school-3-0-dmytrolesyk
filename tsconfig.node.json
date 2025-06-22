@@ -12,6 +12,7 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
+    "jsx": "react-jsx",
 
     /* Linting */
     "strict": true,
@@ -29,7 +30,6 @@
     "noImplicitReturns": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
-    "exactOptionalPropertyTypes": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "forceConsistentCasingInFileNames": true,
@@ -40,5 +40,11 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["vite.config.ts", "playwright.config.ts", "tests/**/*", "tests-examples/**/*"]
+  "include": [
+    "vite.config.ts",
+    "playwright.config.ts",
+    "playwright-ct.config.ts",
+    "tests/**/*",
+    "tests-examples/**/*"
+  ]
 }
