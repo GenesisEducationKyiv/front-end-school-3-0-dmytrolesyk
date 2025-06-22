@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, FC } from 'react';
 import { X } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
 import { Badge } from '@/ui/badge';
@@ -10,7 +10,7 @@ interface GenresTagInputProps {
   onChange: (genres: string[]) => void;
 }
 
-export const GenresTagInput: React.FC<GenresTagInputProps> = ({ genres, value, onChange }) => {
+export const GenresTagInput: FC<GenresTagInputProps> = ({ genres, value, onChange }) => {
   const [selectValue, setSelectValue] = useState<string>('');
 
   const availableGenres = genres.filter(genre => !value.includes(genre));

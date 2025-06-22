@@ -6,6 +6,7 @@ import { TrackI } from '@/features/tracks/lib/types';
 import { Input } from '@/ui/input';
 import { SortingButton } from './sorting-button';
 import { isValidInputValue } from '@/lib/type-guards';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type TrackData = Pick<TrackI, 'id' | 'slug'>;
 
@@ -24,8 +25,14 @@ export const createColumns = ({
     header: () => 'Actions',
     cell: ({ row }) => {
       const trackData = { id: row.original.id, slug: row.original.slug };
+      const rowSelected = row.getIsSelected();
       return (
-        <>
+        <div className="flex items-baseline">
+          <Checkbox
+            className="cursor-pointer mx-0.5"
+            checked={rowSelected}
+            onCheckedChange={row.getToggleSelectedHandler()}
+          />
           <Button
             data-testid={`edit-track-${row.original.id}`}
             onClick={() => {
@@ -33,6 +40,7 @@ export const createColumns = ({
             }}
             variant="ghost"
             className="cursor-pointer"
+            disabled={rowSelected}
           >
             <Pencil className="ml-2 h-4 w-4" />
           </Button>
@@ -43,6 +51,7 @@ export const createColumns = ({
             }}
             variant="ghost"
             className="cursor-pointer"
+            disabled={rowSelected}
           >
             <Settings />
           </Button>
@@ -53,10 +62,11 @@ export const createColumns = ({
             }}
             variant="ghost"
             className="cursor-pointer"
+            disabled={rowSelected}
           >
             <Trash2 />
           </Button>
-        </>
+        </div>
       );
     },
   },

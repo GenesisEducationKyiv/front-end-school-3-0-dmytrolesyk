@@ -1,4 +1,5 @@
 'use no memo';
+
 import { useState } from 'react';
 import {
   ColumnDef,
@@ -10,10 +11,15 @@ import {
   ColumnFiltersState,
   getFilteredRowModel,
   useReactTable,
+  RowSelectionState,
 } from '@tanstack/react-table';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/table';
 import { DataTablePagination } from './pagination';
+
+interface TableRow {
+  id: string | number;
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -23,9 +29,11 @@ interface DataTableProps<TData, TValue> {
   onPaginationChange: OnChangeFn<PaginationState>;
   sorting: SortingState;
   onSortingChange: OnChangeFn<SortingState>;
+  rowSelection: RowSelectionState;
+  onRowSelectionChange: OnChangeFn<RowSelectionState>;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends TableRow, TValue>({
   columns,
   data,
   totalItems,
@@ -33,6 +41,8 @@ export function DataTable<TData, TValue>({
   onPaginationChange,
   sorting,
   onSortingChange,
+  rowSelection,
+  onRowSelectionChange,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -43,11 +53,14 @@ export function DataTable<TData, TValue>({
     manualPagination: true,
     manualSorting: true,
     rowCount: totalItems,
-    state: { pagination, sorting, columnFilters },
+    enableRowSelection: true,
+    state: { pagination, sorting, columnFilters, rowSelection },
+    getRowId: row => String(row.id),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onPaginationChange,
     onSortingChange,
+    onRowSelectionChange,
   });
 
   return (

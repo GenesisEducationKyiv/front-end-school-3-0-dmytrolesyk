@@ -16,7 +16,7 @@ import { Input } from '@/ui/input';
 import { Label } from '@/ui/label';
 import { Spinner } from '@/ui/spinner';
 import { getGenres, useAddTrack, getTrack, useEditTrack } from '@/features/tracks/lib/queries';
-import { ConfirmDialog } from '../../../ui/confirm-dialog';
+import { ConfirmDialog } from '@/ui/confirm-dialog';
 import { TrackSchema } from '@/features/tracks/lib/schemas';
 import { GenresTagInput } from './genres-input';
 import { FieldError } from '@/ui/field-error';
