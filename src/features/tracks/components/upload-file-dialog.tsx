@@ -11,6 +11,7 @@ import { ConfirmDialog } from '@/ui/confirm-dialog';
 
 interface UploadFileDialogProps {
   open: boolean;
+  onClose: () => void;
   setOpen: Dispatch<SetStateAction<boolean>>;
   onFormSubmit: () => void;
   trackSlug: string;
@@ -18,6 +19,7 @@ interface UploadFileDialogProps {
 
 export function UploadFileDialog({
   open,
+  onClose,
   trackSlug,
   setOpen,
   onFormSubmit,
@@ -62,7 +64,19 @@ export function UploadFileDialog({
   const isProcessing = isUploading || isRemoving;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={newOpen => {
+        if (!newOpen && file) {
+          setConfirmDialogOpen(true);
+        } else {
+          if (!newOpen) {
+            onClose();
+          }
+          setOpen(newOpen);
+        }
+      }}
+    >
       <DialogContent className="sm:max-w-[600px]">
         <Spinner spinning={isLoading || isProcessing}>
           <DialogHeader>
