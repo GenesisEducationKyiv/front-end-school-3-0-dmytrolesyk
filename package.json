@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "prepare": "husky",
     "typecheck": "tsc --noEmit --project tsconfig.app.json",
-    "test-ct": "playwright test -c playwright-ct.config.ts"
+    "typecheck:node": "tsc --noEmit --project tsconfig.node.json",
+    "test-ct": "playwright test -c tests/playwright-ct.config.ts",
+    "test": "playwright test -c tests/playwright.config.ts --ui"
   },
   "dependencies": {
     "@mobily/ts-belt": "^3.13.1",
@@ -59,6 +61,7 @@
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
+    "testcontainers": "^11.0.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.26.1",
     "vite": "^6.3.5"
