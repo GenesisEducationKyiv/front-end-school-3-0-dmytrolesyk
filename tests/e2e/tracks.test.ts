@@ -1,11 +1,20 @@
 import { test, expect } from '../fixtures/with-backend.fixture';
 
-test('has title', async ({ page }) => {
-  await page.goto('http://localhost:3000/tracks');
+test('Has title and header', async ({ page }) => {
+  await page.goto('/tracks');
 
   await expect(page).toHaveTitle('Music Manager');
 
-  const heading = await page.getByTestId('tracks-header').textContent();
+  const header = await page.getByTestId('tracks-header').textContent();
 
-  expect(heading).toBe('Music Management App');
+  expect(header).toBe('Music Management App');
+});
+
+test.only('Tracks are rendered correctly', async ({ page }) => {
+  await page.goto('/tracks');
+
+  await expect(page).toHaveTitle('Music Manager');
+
+  const trackRows = page.getByTestId(/track-item-\d+/g);
+  expect(await trackRows.count()).toBe(9);
 });
