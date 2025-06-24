@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/ui/dialog';
@@ -8,30 +8,36 @@ import { AudioFileUploadInput } from '@/ui/audio-upload';
 import { Spinner } from '@/ui/spinner';
 import { AudioPlayer } from '@/ui/audioplayer';
 import { ConfirmDialog } from '@/ui/confirm-dialog';
+import { useTracksStore } from '../store/tracks-store';
 
 interface UploadFileDialogProps {
-  open: boolean;
-  onClose: () => void;
-  setOpen: Dispatch<SetStateAction<boolean>>;
   onFormSubmit: () => void;
-  trackSlug: string;
 }
 
-export function UploadFileDialog({
-  open,
-  onClose,
-  trackSlug,
-  setOpen,
-  onFormSubmit,
-}: UploadFileDialogProps) {
+export function UploadFileDialog({ onFormSubmit }: UploadFileDialogProps) {
   const [file, setFile] = useState<File | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
-  const { data: trackToEdit, isLoading } = useQuery(getTrack(trackSlug));
+  const activeTrack = useTracksStore(store => store.activeTrack);
+  const setActiveTrack = useTracksStore(store => store.setActiveTrack);
+  const uploadFileDialogOpen = useTracksStore(store => store.uploadFileDialogOpen);
+  const setUploadFileDialogOpen = useTracksStore(store => store.setUploadFileDialogOpen);
+
+  const { data: trackToEdit, isLoading: isGetTrackLoading } = useQuery({
+    ...getTrack(activeTrack?.slug ?? ''),
+    enabled: Boolean(activeTrack?.slug),
+  });
+
+  const onFileProcessed = () => {
+    setUploadFileDialogOpen(false);
+    setActiveTrack(null);
+    onFormSubmit();
+    toast.success(<p data-testid="toast-success">File was successfully uploaded</p>);
+  };
 
   const { mutate: upload, isPending: isUploading } = useUploadFile({
     onSuccess: () => {
-      onFormSubmit();
+      onFileProcessed();
       toast.success(<p data-testid="toast-success">File was successfully uploaded</p>);
     },
     onError: ({ message }: { message: string }) => {
@@ -41,7 +47,7 @@ export function UploadFileDialog({
 
   const { mutate: remove, isPending: isRemoving } = useRemoveFile({
     onSuccess: () => {
-      onFormSubmit();
+      onFileProcessed();
       toast.success(<p data-testid="toast-success">File was successfully removed</p>);
     },
     onError: ({ message }: { message: string }) => {
@@ -61,24 +67,23 @@ export function UploadFileDialog({
     }
   };
 
+  const onDialogOpenChange = (newOpen: boolean) => {
+    if (!newOpen && file) {
+      setConfirmDialogOpen(true);
+    } else {
+      if (!newOpen) {
+        setActiveTrack(null);
+      }
+      setUploadFileDialogOpen(newOpen);
+    }
+  };
+
   const isProcessing = isUploading || isRemoving;
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={newOpen => {
-        if (!newOpen && file) {
-          setConfirmDialogOpen(true);
-        } else {
-          if (!newOpen) {
-            onClose();
-          }
-          setOpen(newOpen);
-        }
-      }}
-    >
+    <Dialog open={uploadFileDialogOpen} onOpenChange={onDialogOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
-        <Spinner spinning={isLoading || isProcessing}>
+        <Spinner spinning={isGetTrackLoading || isProcessing}>
           <DialogHeader>
             <DialogTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
               Manage audiofile for the track
@@ -127,7 +132,7 @@ export function UploadFileDialog({
                   uploadFile();
                 }
               }}
-              disabled={isLoading || isProcessing || (!file && !trackToEdit?.audioFile)}
+              disabled={isGetTrackLoading || isProcessing || (!file && !trackToEdit?.audioFile)}
               type="submit"
             >
               {trackToEdit?.audioFile ? 'Delete file' : 'Upload file'}
@@ -140,7 +145,7 @@ export function UploadFileDialog({
         setOpen={setConfirmDialogOpen}
         onConfirm={() => {
           removeFile();
-          setOpen(false);
+          setUploadFileDialogOpen(false);
         }}
         message="Audio file will be deleted (you'll be able to upload a new one though)"
       />

@@ -1,72 +1,26 @@
-import { Pencil, Settings, Trash2 } from 'lucide-react';
 import { ColumnDef } from '@tanstack/react-table';
 import { AudioPlayer } from '@/ui/audioplayer';
-import { Button } from '@/ui/button';
 import { TrackI } from '@/features/tracks/lib/types';
 import { Input } from '@/ui/input';
 import { SortingButton } from './sorting-button';
 import { isValidInputValue } from '@/lib/type-guards';
-import { Checkbox } from '@/components/ui/checkbox';
+import { TracksTableActions } from './tracks-table-actions';
 
-type TrackData = Pick<TrackI, 'id' | 'slug'>;
-
-export const createColumns = ({
-  onEdit,
-  onConfigure,
-  onDelete,
-}: {
-  onEdit: (track: TrackData) => void;
-  onConfigure: (track: TrackData) => void;
-  onDelete: (track: TrackData) => void;
-}): ColumnDef<TrackI>[] => [
+export const columns: ColumnDef<TrackI>[] = [
   {
     id: 'actions',
     accessorKey: 'actions',
     header: () => 'Actions',
     cell: ({ row }) => {
-      const trackData = { id: row.original.id, slug: row.original.slug };
-      const rowSelected = row.getIsSelected();
       return (
-        <div className="flex items-baseline">
-          <Checkbox
-            className="cursor-pointer mx-0.5"
-            checked={rowSelected}
-            onCheckedChange={row.getToggleSelectedHandler()}
-          />
-          <Button
-            data-testid={`edit-track-${row.original.id}`}
-            onClick={() => {
-              onEdit(trackData);
-            }}
-            variant="ghost"
-            className="cursor-pointer"
-            disabled={rowSelected}
-          >
-            <Pencil className="ml-2 h-4 w-4" />
-          </Button>
-          <Button
-            data-testid={`upload-track-${row.original.id}`}
-            onClick={() => {
-              onConfigure(trackData);
-            }}
-            variant="ghost"
-            className="cursor-pointer"
-            disabled={rowSelected}
-          >
-            <Settings />
-          </Button>
-          <Button
-            data-testid={`delete-track-${row.original.id}`}
-            onClick={() => {
-              onDelete(trackData);
-            }}
-            variant="ghost"
-            className="cursor-pointer"
-            disabled={rowSelected}
-          >
-            <Trash2 />
-          </Button>
-        </div>
+        <TracksTableActions
+          trackData={{
+            id: row.original.id,
+            slug: row.original.slug,
+            isSelected: row.getIsSelected(),
+          }}
+          onCheckedChange={row.getToggleSelectedHandler()}
+        />
       );
     },
   },

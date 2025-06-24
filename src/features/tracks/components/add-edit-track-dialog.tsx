@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
@@ -20,6 +20,7 @@ import { ConfirmDialog } from '@/ui/confirm-dialog';
 import { TrackSchema } from '@/features/tracks/lib/schemas';
 import { GenresTagInput } from './genres-input/genres-input';
 import { FieldError } from '@/ui/field-error';
+import { useTracksStore } from '@/features/tracks/store/tracks-store';
 
 const TrackFormSchema = TrackSchema.pick({
   title: true,
@@ -40,49 +41,47 @@ const defaultTrack: TrackForm = {
 };
 
 interface AddEditTrackDialogProps {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
   onFormSubmit: () => void;
-  onClose: () => void;
-  trackSlug: string | undefined;
 }
 
 const onError = ({ message }: { message: string }) => {
   toast.error(<p data-testid="toast-error">{message}</p>);
 };
 
-export function AddEditTrackDialog({
-  open,
-  setOpen,
-  onClose,
-  onFormSubmit,
-  trackSlug,
-}: AddEditTrackDialogProps) {
+export function AddEditTrackDialog({ onFormSubmit }: AddEditTrackDialogProps) {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
+  const activeTrack = useTracksStore(store => store.activeTrack);
+  const setActiveTrack = useTracksStore(store => store.setActiveTrack);
+  const addEditDialogOpen = useTracksStore(store => store.addEditDialogOpen);
+  const setAddEditDialogOpen = useTracksStore(store => store.setAddEditDialogOpen);
+
   const { data: genres = [], isLoading: isGetGenresLoading } = useQuery(getGenres());
+
   const { data: trackToEdit, isLoading: isGetTrackLoading } = useQuery({
-    ...getTrack(trackSlug ?? ''),
-    enabled: Boolean(trackSlug),
+    ...getTrack(activeTrack?.slug ?? ''),
+    enabled: Boolean(activeTrack?.slug),
   });
 
   const editMode = Boolean(trackToEdit);
 
+  const onSuccess = () => {
+    toast.success(
+      <p data-testid="toast-success">Track was successfully {editMode ? 'edited' : 'added'}</p>,
+    );
+    form.reset(defaultTrack);
+    setAddEditDialogOpen(false);
+    setActiveTrack(null);
+    onFormSubmit();
+  };
+
   const { mutate: addTrack, isPending: isAddTrackPending } = useAddTrack({
-    onSuccess: () => {
-      toast.success(<p data-testid="toast-success">Track was successfully added</p>);
-      form.reset(defaultTrack);
-      onFormSubmit();
-    },
+    onSuccess,
     onError,
   });
 
   const { mutate: editTrack, isPending: isEditTrackPending } = useEditTrack({
-    onSuccess: () => {
-      toast.success(<p data-testid="toast-success">Track was successfully edited</p>);
-      form.reset(defaultTrack);
-      onFormSubmit();
-    },
+    onSuccess,
     onError,
   });
 
@@ -100,24 +99,23 @@ export function AddEditTrackDialog({
     },
   });
 
+  const onDialogOpenChange = (newOpen: boolean) => {
+    if (!newOpen && form.state.isDirty) {
+      setConfirmDialogOpen(true);
+    } else {
+      if (!newOpen) {
+        form.reset(defaultTrack);
+        setActiveTrack(null);
+      }
+      setAddEditDialogOpen(newOpen);
+    }
+  };
+
   const isLoading =
     isAddTrackPending || isGetTrackLoading || isEditTrackPending || isGetGenresLoading;
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={newOpen => {
-        if (!newOpen && form.state.isDirty) {
-          setConfirmDialogOpen(true);
-        } else {
-          if (!newOpen) {
-            form.reset(defaultTrack);
-            onClose();
-          }
-          setOpen(newOpen);
-        }
-      }}
-    >
+    <Dialog open={addEditDialogOpen} onOpenChange={onDialogOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <Spinner spinning={isLoading}>
           <DialogHeader className="scroll-m-20 text-2xl font-semibold tracking-tight">
@@ -292,7 +290,7 @@ export function AddEditTrackDialog({
         setOpen={setConfirmDialogOpen}
         onConfirm={() => {
           form.reset(defaultTrack);
-          setOpen(false);
+          setAddEditDialogOpen(false);
         }}
         message="All the typed values will be reset"
       />
