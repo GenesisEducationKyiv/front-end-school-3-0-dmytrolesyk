@@ -8,6 +8,7 @@ type DeleteTrackDialogProps = Pick<ConfirmDialogProps, 'onConfirm'>;
 export function DeleteTracksDialog({ onConfirm }: DeleteTrackDialogProps) {
   const activeTrack = useTracksStore(store => store.activeTrack);
   const selectedTracks = useTracksStore(store => store.selectedTracks);
+  const setSelectedTracks = useTracksStore(store => store.setSelectedTracks);
   const setActiveTrack = useTracksStore(store => store.setActiveTrack);
   const confirmDeleteDialogOpen = useTracksStore(store => store.confirmDeleteDialogOpen);
   const setConfirmDeleteDialogOpen = useTracksStore(store => store.setConfirmDeleteDialogOpen);
@@ -16,18 +17,30 @@ export function DeleteTracksDialog({ onConfirm }: DeleteTrackDialogProps) {
 
   const handlers = {
     onSuccess: () => {
-      setActiveTrack(null);
       setConfirmDeleteDialogOpen(false);
       onConfirm();
-      toast.success(<p data-testid="toast-success">Track(s) were deleted successfully</p>);
     },
     onError: ({ message }: { message: string }) => {
       toast.error(<p data-testid="toast-error">{message}</p>);
     },
   };
 
-  const { mutate: deleteTrack } = useDeleteTrack(handlers);
-  const { mutate: bulkDeleteTracks } = useBulkDeleteTracks(handlers);
+  const { mutate: deleteTrack } = useDeleteTrack({
+    onSuccess: () => {
+      setActiveTrack(null);
+      handlers.onSuccess();
+      toast.success(<p data-testid="toast-success">Track was deleted successfully</p>);
+    },
+    onError: handlers.onError,
+  });
+  const { mutate: bulkDeleteTracks } = useBulkDeleteTracks({
+    onSuccess: () => {
+      setSelectedTracks({});
+      handlers.onSuccess();
+      toast.success(<p data-testid="toast-success">Tracks were deleted successfully</p>);
+    },
+    onError: handlers.onError,
+  });
 
   const onConfirmDeleteTrack = () => {
     if (activeTrack) {
