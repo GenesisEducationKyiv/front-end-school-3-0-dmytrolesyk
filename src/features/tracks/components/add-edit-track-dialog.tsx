@@ -144,7 +144,7 @@ export function AddEditTrackDialog({
                       </Label>
                       <Input
                         id="title"
-                        data-test-id="input-title"
+                        data-testid="input-title"
                         onBlur={field.handleBlur}
                         onChange={e => {
                           field.handleChange(e.target.value);
@@ -173,7 +173,7 @@ export function AddEditTrackDialog({
                         Artist
                       </Label>
                       <Input
-                        data-test-id="input-artist"
+                        data-testid="input-artist"
                         onChange={e => {
                           field.handleChange(e.target.value);
                         }}
@@ -203,7 +203,7 @@ export function AddEditTrackDialog({
                         Album
                       </Label>
                       <Input
-                        data-test-id="input-album"
+                        data-testid="input-album"
                         onChange={e => {
                           field.handleChange(e.target.value);
                         }}
@@ -224,7 +224,7 @@ export function AddEditTrackDialog({
                       </Label>
                       <div className="col-span-3">
                         <Input
-                          data-test-id="input-cover-image"
+                          data-testid="input-cover-image"
                           onChange={e => {
                             field.handleChange(e.target.value);
                           }}
@@ -276,7 +276,7 @@ export function AddEditTrackDialog({
             </div>
             <DialogFooter>
               <Button
-                data-test-id="submit-button"
+                data-testid="submit-button"
                 aria-disabled={isLoading}
                 disabled={isLoading}
                 type="submit"
