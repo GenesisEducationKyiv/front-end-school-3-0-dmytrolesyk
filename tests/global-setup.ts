@@ -8,7 +8,7 @@ async function globalSetup() {
   try {
     backendContainer = await getBackendContainer();
 
-    await backendContainer.exec(['node', 'dist/seed.js', '100']);
+    await backendContainer.exec(['node dist/seed.js']);
 
     const backendPort = backendContainer.getMappedPort(8000);
     const backendHost = backendContainer.getHost();
