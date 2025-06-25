@@ -13,6 +13,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
+
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install
 
@@ -20,6 +21,8 @@ jobs:
         run: pnpm exec playwright install --with-deps
 
       - name: Run Playwright tests
+        env:
+          VITE_API_HOST: http://localhost:8000
         run: pnpm exec playwright test -c tests/playwright.config.ts
 
       - uses: actions/upload-artifact@v4
