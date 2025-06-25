@@ -25,7 +25,7 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'pnpm start',
+    command: 'pnpm dev',
     url: process.env['VITE_BASE_URL'] || 'http://localhost:3000',
     reuseExistingServer: !process.env['CI'],
   },
