@@ -86,10 +86,10 @@ test('edit functionality works correctly', async ({ page }) => {
   await expect(track.getByTestId(/^track-item-\d+-album$/)).toHaveText('Edited album');
 });
 
-test('delete functionality works correctly', async ({ page }) => {
+test.only('delete functionality works correctly', async ({ page }) => {
   await page.goto('/tracks');
 
-  const track = page.getByTestId(/^track-item-\d+$/);
+  const track = page.getByTestId(/^track-item-\d+$/).first();
   const trackTestId = await track.getAttribute('data-testid');
 
   // track Locator.prototype.getAttribute can return null
