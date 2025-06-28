@@ -5,10 +5,11 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'playwright/.cache'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.strictTypeChecked],
     files: ['**/*.{ts,tsx}'],
+    ignores: ['tests/**/*', 'tests-examples/**/*'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -29,7 +30,7 @@ export default tseslint.config(
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.strictTypeChecked],
-    files: ['*.ts', '*.mts', '*.cts'],
+    files: ['*.ts', '*.mts', '*.cts', 'tests/**/*.ts', 'tests-examples/**/*.ts'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.node,

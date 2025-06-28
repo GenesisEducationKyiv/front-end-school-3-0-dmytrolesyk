@@ -28,10 +28,10 @@ export const GenresTagInput: FC<GenresTagInputProps> = ({ genres, value, onChang
   };
 
   return (
-    <div data-test-id="genre-selector" className="space-y-4">
+    <div data-testid="genre-selector" className="space-y-4">
       <div className="flex flex-wrap gap-2">
         {value.map(genre => (
-          <Badge key={genre} className="py-1 px-2 flex items-center gap-1">
+          <Badge data-testid="badge" key={genre} className="py-1 px-2 flex items-center gap-1">
             {genre}
             <Button
               type="button"

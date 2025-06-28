@@ -9,7 +9,10 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "prepare": "husky",
-    "typecheck": "tsc --noEmit --project tsconfig.app.json"
+    "typecheck": "tsc --noEmit --project tsconfig.app.json",
+    "typecheck:node": "tsc --noEmit --project tsconfig.node.json",
+    "test-ct": "playwright test -c tests/playwright-ct.config.ts",
+    "test": "playwright test -c tests/playwright.config.ts --ui"
   },
   "dependencies": {
     "@mobily/ts-belt": "^3.13.1",
@@ -45,6 +48,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@playwright/experimental-ct-react": "^1.53.1",
+    "@playwright/test": "^1.53.1",
     "@tanstack/router-plugin": "^1.116.1",
     "@types/node": "^22.14.1",
     "@types/react": "^19.0.10",
@@ -56,6 +61,7 @@
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
+    "testcontainers": "^11.0.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.26.1",
     "vite": "^6.3.5"
