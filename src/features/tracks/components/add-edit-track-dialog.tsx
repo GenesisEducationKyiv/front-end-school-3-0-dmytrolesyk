@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { z } from 'zod';
-import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import { useForm } from '@tanstack/react-form';
 import { Button } from '@/ui/button';
@@ -21,6 +20,7 @@ import { TrackSchema } from '@/features/tracks/lib/schemas';
 import { GenresTagInput } from './genres-input/genres-input';
 import { FieldError } from '@/ui/field-error';
 import { useTracksStore } from '@/features/tracks/store/tracks-store';
+import { showToastError, showToastSuccess } from '@/lib/show-toast-message';
 
 const TrackFormSchema = TrackSchema.pick({
   title: true,
@@ -45,16 +45,20 @@ interface AddEditTrackDialogProps {
 }
 
 const onError = ({ message }: { message: string }) => {
-  toast.error(<p data-testid="toast-error">{message}</p>);
+  showToastError(message);
 };
 
 export function AddEditTrackDialog({ onFormSubmit }: AddEditTrackDialogProps) {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
-  const activeTrack = useTracksStore(store => store.activeTrack);
-  const setActiveTrack = useTracksStore(store => store.setActiveTrack);
-  const addEditDialogOpen = useTracksStore(store => store.addEditDialogOpen);
-  const setAddEditDialogOpen = useTracksStore(store => store.setAddEditDialogOpen);
+  const { activeTrack, setActiveTrack, addEditDialogOpen, setAddEditDialogOpen } = useTracksStore(
+    state => ({
+      activeTrack: state.activeTrack,
+      setActiveTrack: state.setActiveTrack,
+      addEditDialogOpen: state.addEditDialogOpen,
+      setAddEditDialogOpen: state.setAddEditDialogOpen,
+    }),
+  );
 
   const { data: genres = [], isLoading: isGetGenresLoading } = useQuery(getGenres());
 
@@ -66,9 +70,7 @@ export function AddEditTrackDialog({ onFormSubmit }: AddEditTrackDialogProps) {
   const editMode = Boolean(trackToEdit);
 
   const onSuccess = () => {
-    toast.success(
-      <p data-testid="toast-success">Track was successfully {editMode ? 'edited' : 'added'}</p>,
-    );
+    showToastSuccess(`Track was successfully ${editMode ? 'edited' : 'added'}`);
     form.reset(defaultTrack);
     setAddEditDialogOpen(false);
     setActiveTrack(null);

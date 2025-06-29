@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/ui/dialog';
 import { getTrack, useRemoveFile, useUploadFile } from '@/features/tracks/lib/queries';
@@ -9,6 +8,7 @@ import { Spinner } from '@/ui/spinner';
 import { AudioPlayer } from '@/ui/audioplayer';
 import { ConfirmDialog } from '@/ui/confirm-dialog';
 import { useTracksStore } from '../store/tracks-store';
+import { showToastError, showToastSuccess } from '@/lib/show-toast-message';
 
 interface UploadFileDialogProps {
   onFormSubmit: () => void;
@@ -18,10 +18,13 @@ export function UploadFileDialog({ onFormSubmit }: UploadFileDialogProps) {
   const [file, setFile] = useState<File | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
-  const activeTrack = useTracksStore(store => store.activeTrack);
-  const setActiveTrack = useTracksStore(store => store.setActiveTrack);
-  const uploadFileDialogOpen = useTracksStore(store => store.uploadFileDialogOpen);
-  const setUploadFileDialogOpen = useTracksStore(store => store.setUploadFileDialogOpen);
+  const { activeTrack, setActiveTrack, uploadFileDialogOpen, setUploadFileDialogOpen } =
+    useTracksStore(state => ({
+      activeTrack: state.activeTrack,
+      setActiveTrack: state.setActiveTrack,
+      uploadFileDialogOpen: state.uploadFileDialogOpen,
+      setUploadFileDialogOpen: state.setUploadFileDialogOpen,
+    }));
 
   const { data: trackToEdit, isLoading: isGetTrackLoading } = useQuery({
     ...getTrack(activeTrack?.slug ?? ''),
@@ -32,26 +35,26 @@ export function UploadFileDialog({ onFormSubmit }: UploadFileDialogProps) {
     setUploadFileDialogOpen(false);
     setActiveTrack(null);
     onFormSubmit();
-    toast.success(<p data-testid="toast-success">File was successfully uploaded</p>);
+    showToastSuccess('File was successfully uploaded');
   };
 
   const { mutate: upload, isPending: isUploading } = useUploadFile({
     onSuccess: () => {
       onFileProcessed();
-      toast.success(<p data-testid="toast-success">File was successfully uploaded</p>);
+      showToastSuccess('File was successfully uploaded');
     },
     onError: ({ message }: { message: string }) => {
-      toast.error(<p data-testid="toast-error">{message}</p>);
+      showToastError(message);
     },
   });
 
   const { mutate: remove, isPending: isRemoving } = useRemoveFile({
     onSuccess: () => {
       onFileProcessed();
-      toast.success(<p data-testid="toast-success">File was successfully removed</p>);
+      showToastSuccess('File was successfully removed');
     },
     onError: ({ message }: { message: string }) => {
-      toast.error(<p data-testid="toast-error">{message}</p>);
+      showToastError(message);
     },
   });
 

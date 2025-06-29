@@ -1,19 +1,28 @@
 import { useBulkDeleteTracks, useDeleteTrack } from '@/features/tracks/lib/queries';
 import { ConfirmDialog, ConfirmDialogProps } from '@/ui/confirm-dialog';
-import { toast } from 'sonner';
 import { useTracksStore } from '../store/tracks-store';
+import { showToastError, showToastSuccess } from '@/lib/show-toast-message';
 
 type DeleteTrackDialogProps = Pick<ConfirmDialogProps, 'onConfirm'>;
 
 export function DeleteTracksDialog({ onConfirm }: DeleteTrackDialogProps) {
-  const activeTrack = useTracksStore(store => store.activeTrack);
-  const selectedTracks = useTracksStore(store => store.selectedTracks);
-  const setSelectedTracks = useTracksStore(store => store.setSelectedTracks);
-  const setActiveTrack = useTracksStore(store => store.setActiveTrack);
-  const confirmDeleteDialogOpen = useTracksStore(store => store.confirmDeleteDialogOpen);
-  const setConfirmDeleteDialogOpen = useTracksStore(store => store.setConfirmDeleteDialogOpen);
+  const {
+    activeTrack,
+    selectedTracks,
+    setSelectedTracks,
+    setActiveTrack,
+    confirmDeleteDialogOpen,
+    setConfirmDeleteDialogOpen,
+  } = useTracksStore(state => ({
+    activeTrack: state.activeTrack,
+    selectedTracks: state.selectedTracks,
+    setSelectedTracks: state.setSelectedTracks,
+    setActiveTrack: state.setActiveTrack,
+    confirmDeleteDialogOpen: state.confirmDeleteDialogOpen,
+    setConfirmDeleteDialogOpen: state.setConfirmDeleteDialogOpen,
+  }));
 
-  const tracksToDelete = Object.keys(selectedTracks);
+  const tracksToDelete = Object.keys(selectedTracks ?? {});
 
   const handlers = {
     onSuccess: () => {
@@ -21,7 +30,7 @@ export function DeleteTracksDialog({ onConfirm }: DeleteTrackDialogProps) {
       onConfirm();
     },
     onError: ({ message }: { message: string }) => {
-      toast.error(<p data-testid="toast-error">{message}</p>);
+      showToastError(message);
     },
   };
 
@@ -29,7 +38,7 @@ export function DeleteTracksDialog({ onConfirm }: DeleteTrackDialogProps) {
     onSuccess: () => {
       setActiveTrack(null);
       handlers.onSuccess();
-      toast.success(<p data-testid="toast-success">Track was deleted successfully</p>);
+      showToastSuccess('Track was deleted successfully');
     },
     onError: handlers.onError,
   });
@@ -37,7 +46,7 @@ export function DeleteTracksDialog({ onConfirm }: DeleteTrackDialogProps) {
     onSuccess: () => {
       setSelectedTracks({});
       handlers.onSuccess();
-      toast.success(<p data-testid="toast-success">Tracks were deleted successfully</p>);
+      showToastSuccess('Tracks were deleted successfully');
     },
     onError: handlers.onError,
   });

@@ -10,12 +10,16 @@ import { getTracks } from '@/features/tracks/lib/queries';
 import { DeleteTracksDialog } from '@/features/tracks/components/delete-tracks-dialog';
 import { useTracksStore } from '@/features/tracks/store/tracks-store';
 import { useTracksPageSearchParamsState } from '@/features/tracks/hooks/use-search-params-state';
+import { createUpdaterHandler } from '@/lib/utils';
 
 export function TracksPage() {
-  const selectedTracks = useTracksStore(store => store.selectedTracks);
-  const setSelectedTracks = useTracksStore(store => store.setSelectedTracks);
-  const setAddEditDialogOpen = useTracksStore(store => store.setAddEditDialogOpen);
-  const setConfirmDeleteDialogOpen = useTracksStore(store => store.setConfirmDeleteDialogOpen);
+  const { selectedTracks, setSelectedTracks, setAddEditDialogOpen, setConfirmDeleteDialogOpen } =
+    useTracksStore(store => ({
+      selectedTracks: store.selectedTracks,
+      setSelectedTracks: store.setSelectedTracks,
+      setAddEditDialogOpen: store.setAddEditDialogOpen,
+      setConfirmDeleteDialogOpen: store.setConfirmDeleteDialogOpen,
+    }));
 
   const {
     page,
@@ -89,25 +93,13 @@ export function TracksPage() {
       <DataTable
         pagination={paginationState}
         sorting={sortingState}
-        onPaginationChange={updaterOrValue => {
-          const newPagination =
-            typeof updaterOrValue === 'function' ? updaterOrValue(paginationState) : updaterOrValue;
-          updatePagination(newPagination);
-        }}
-        onSortingChange={updaterOrValue => {
-          const newSortingState =
-            typeof updaterOrValue === 'function' ? updaterOrValue(sortingState) : updaterOrValue;
-          updateSorting(newSortingState);
-        }}
+        onPaginationChange={createUpdaterHandler(paginationState, updatePagination)}
+        onSortingChange={createUpdaterHandler(sortingState, updateSorting)}
         columns={columns}
         data={data.data}
         totalItems={data.meta.total}
         rowSelection={selectedTracks}
-        onRowSelectionChange={updaterOrValue => {
-          const newSelection =
-            typeof updaterOrValue === 'function' ? updaterOrValue(selectedTracks) : updaterOrValue;
-          setSelectedTracks(newSelection);
-        }}
+        onRowSelectionChange={createUpdaterHandler(selectedTracks, setSelectedTracks)}
       />
       <AddEditTrackDialog
         onFormSubmit={() => {

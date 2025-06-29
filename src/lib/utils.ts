@@ -18,3 +18,15 @@ export const validateSchema = <T>(
 
   return result.data;
 };
+
+type Updater<T> = T | ((old: T) => T);
+
+export function createUpdaterHandler<T>(currentValue: T, setter: (value: T) => void) {
+  return (updaterOrValue: Updater<T>) => {
+    const newValue =
+      typeof updaterOrValue === 'function'
+        ? (updaterOrValue as (old: T) => T)(currentValue)
+        : updaterOrValue;
+    setter(newValue);
+  };
+}

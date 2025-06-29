@@ -1,4 +1,5 @@
-import { create } from 'zustand';
+import { createWithEqualityFn } from 'zustand/traditional';
+import { shallow } from 'zustand/shallow';
 import { TrackI } from '@/features/tracks/lib/types';
 
 type ActiveTrack = Pick<TrackI, 'id' | 'slug'> | null;
@@ -16,25 +17,30 @@ interface TracksStore {
   setConfirmDeleteDialogOpen: (confirmDeleteDialogOpen: boolean) => void;
 }
 
-export const useTracksStore = create<TracksStore>(set => ({
-  activeTrack: null,
-  selectedTracks: {},
-  addEditDialogOpen: false,
-  uploadFileDialogOpen: false,
-  confirmDeleteDialogOpen: false,
-  setAddEditDialogOpen: (addEditDialogOpen: boolean) => {
-    set({ addEditDialogOpen });
-  },
-  setUploadFileDialogOpen: (uploadFileDialogOpen: boolean) => {
-    set({ uploadFileDialogOpen });
-  },
-  setConfirmDeleteDialogOpen: (confirmDeleteDialogOpen: boolean) => {
-    set({ confirmDeleteDialogOpen });
-  },
-  setActiveTrack: (activeTrack: ActiveTrack) => {
-    set({ activeTrack });
-  },
-  setSelectedTracks: (selectedTracks: Record<string, boolean>) => {
-    set({ selectedTracks });
-  },
-}));
+const useTracksStore = createWithEqualityFn<TracksStore>()(
+  set => ({
+    activeTrack: null,
+    selectedTracks: {},
+    addEditDialogOpen: false,
+    uploadFileDialogOpen: false,
+    confirmDeleteDialogOpen: false,
+    setAddEditDialogOpen: (addEditDialogOpen: boolean) => {
+      set({ addEditDialogOpen });
+    },
+    setUploadFileDialogOpen: (uploadFileDialogOpen: boolean) => {
+      set({ uploadFileDialogOpen });
+    },
+    setConfirmDeleteDialogOpen: (confirmDeleteDialogOpen: boolean) => {
+      set({ confirmDeleteDialogOpen });
+    },
+    setActiveTrack: (activeTrack: ActiveTrack) => {
+      set({ activeTrack });
+    },
+    setSelectedTracks: (selectedTracks: Record<string, boolean>) => {
+      set({ selectedTracks });
+    },
+  }),
+  shallow,
+);
+
+export { useTracksStore };

@@ -11,10 +11,17 @@ interface TracksTableActionsProps {
 }
 
 export const TracksTableActions: FC<TracksTableActionsProps> = ({ trackData, onCheckedChange }) => {
-  const setActiveTrack = useTracksStore(store => store.setActiveTrack);
-  const setAddEditDialogOpen = useTracksStore(store => store.setAddEditDialogOpen);
-  const setUploadFileDialogOpen = useTracksStore(store => store.setUploadFileDialogOpen);
-  const setConfirmDeleteDialogOpen = useTracksStore(store => store.setConfirmDeleteDialogOpen);
+  const {
+    setActiveTrack,
+    setAddEditDialogOpen,
+    setUploadFileDialogOpen,
+    setConfirmDeleteDialogOpen,
+  } = useTracksStore(state => ({
+    setActiveTrack: state.setActiveTrack,
+    setAddEditDialogOpen: state.setAddEditDialogOpen,
+    setUploadFileDialogOpen: state.setUploadFileDialogOpen,
+    setConfirmDeleteDialogOpen: state.setConfirmDeleteDialogOpen,
+  }));
 
   return (
     <div className="flex items-baseline">

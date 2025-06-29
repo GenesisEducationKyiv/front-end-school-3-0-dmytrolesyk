@@ -7,8 +7,8 @@ export const useTracksPageSearchParamsState = () => {
   const { page, size, sort, order, q } = route.useSearch();
   const navigate = route.useNavigate();
 
-  const paginationState = { pageIndex: page - 1, pageSize: size };
-  const sortingState = sort ? [{ id: sort, desc: order === 'desc' }] : [];
+  const paginationState: PaginationState = { pageIndex: page - 1, pageSize: size };
+  const sortingState: SortingState = sort ? [{ id: sort, desc: order === 'desc' }] : [];
 
   const updatePagination = (pagination: PaginationState) => {
     void navigate({
