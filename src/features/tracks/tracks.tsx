@@ -1,24 +1,25 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { createColumns } from '@/features/tracks/components/columns';
+import { columns } from '@/features/tracks/components/columns';
 import { DataTable } from '@/ui/data-table';
-import { TrackI } from '@/features/tracks/lib/types';
-import { AddEditTrackDialog } from '@/features/tracks/components/add-edit-track-dialog';
 import { Button } from '@/ui/button';
+import { DebouncedInput } from '@/ui/debounced-input';
+import { AddEditTrackDialog } from '@/features/tracks/components/add-edit-track-dialog';
 import { UploadFileDialog } from '@/features/tracks/components/upload-file-dialog';
 import { TrackTableSkeleton } from '@/features/tracks/components/tracks-skeleton';
 import { getTracks } from '@/features/tracks/lib/queries';
 import { DeleteTracksDialog } from '@/features/tracks/components/delete-tracks-dialog';
-import { useTracksPageSearchParamsState } from './hooks/use-search-params-state';
-import { DebouncedInput } from '@/ui/debounced-input';
+import { useTracksStore } from '@/features/tracks/store/tracks-store';
+import { useTracksPageSearchParamsState } from '@/features/tracks/hooks/use-search-params-state';
+import { createUpdaterHandler } from '@/lib/utils';
 
 export function TracksPage() {
-  const [addEditDialogOpen, setAddEditDialogOpen] = useState(false);
-  const [uploadFileDialogOpen, setUploadFileDialogOpen] = useState(false);
-  const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState(false);
-  const [activeTrack, setActiveTrack] = useState<Pick<TrackI, 'id' | 'slug'> | null>(null);
-
-  const [tracksSelected, setTracksSelected] = useState<{ [id: string]: boolean }>({});
+  const { selectedTracks, setSelectedTracks, setAddEditDialogOpen, setConfirmDeleteDialogOpen } =
+    useTracksStore(store => ({
+      selectedTracks: store.selectedTracks,
+      setSelectedTracks: store.setSelectedTracks,
+      setAddEditDialogOpen: store.setAddEditDialogOpen,
+      setConfirmDeleteDialogOpen: store.setConfirmDeleteDialogOpen,
+    }));
 
   const {
     page,
@@ -39,26 +40,11 @@ export function TracksPage() {
     refetch: refetchTracks,
   } = useQuery(getTracks({ page, limit: size, sort, order, search }));
 
-  const columns = createColumns({
-    onEdit: track => {
-      setActiveTrack(track);
-      setAddEditDialogOpen(true);
-    },
-    onConfigure: track => {
-      setActiveTrack(track);
-      setUploadFileDialogOpen(true);
-    },
-    onDelete: track => {
-      setActiveTrack(track);
-      setConfirmDeleteDialogOpen(true);
-    },
-  });
-
   if (isLoading || !data) {
     return <TrackTableSkeleton />;
   }
 
-  const tracksToDelete = Object.keys(tracksSelected);
+  const tracksToDelete = Object.keys(selectedTracks);
 
   return (
     <div className="container mx-auto py-10">
@@ -107,75 +93,29 @@ export function TracksPage() {
       <DataTable
         pagination={paginationState}
         sorting={sortingState}
-        onPaginationChange={updaterOrValue => {
-          const newPagination =
-            typeof updaterOrValue === 'function' ? updaterOrValue(paginationState) : updaterOrValue;
-          updatePagination(newPagination);
-        }}
-        onSortingChange={updaterOrValue => {
-          const newSortingState =
-            typeof updaterOrValue === 'function' ? updaterOrValue(sortingState) : updaterOrValue;
-          updateSorting(newSortingState);
-        }}
+        onPaginationChange={createUpdaterHandler(paginationState, updatePagination)}
+        onSortingChange={createUpdaterHandler(sortingState, updateSorting)}
         columns={columns}
         data={data.data}
         totalItems={data.meta.total}
-        rowSelection={tracksSelected}
-        onRowSelectionChange={setTracksSelected}
+        rowSelection={selectedTracks}
+        onRowSelectionChange={createUpdaterHandler(selectedTracks, setSelectedTracks)}
       />
-      {addEditDialogOpen && (
-        <AddEditTrackDialog
-          open={addEditDialogOpen}
-          trackSlug={activeTrack?.slug}
-          setOpen={setAddEditDialogOpen}
-          onClose={() => {
-            setActiveTrack(null);
-          }}
-          onFormSubmit={() => {
-            setAddEditDialogOpen(false);
-            setActiveTrack(null);
-            void refetchTracks();
-          }}
-        />
-      )}
-      {activeTrack && uploadFileDialogOpen && (
-        <UploadFileDialog
-          trackSlug={activeTrack.slug}
-          open={uploadFileDialogOpen}
-          setOpen={setUploadFileDialogOpen}
-          onClose={() => {
-            setActiveTrack(null);
-          }}
-          onFormSubmit={() => {
-            setUploadFileDialogOpen(false);
-            setActiveTrack(null);
-            void refetchTracks();
-          }}
-        />
-      )}
-      {activeTrack ? (
-        <DeleteTracksDialog
-          trackId={activeTrack.id}
-          open={confirmDeleteDialogOpen}
-          setOpen={setConfirmDeleteDialogOpen}
-          onConfirm={() => {
-            void refetchTracks();
-            setActiveTrack(null);
-            setConfirmDeleteDialogOpen(false);
-          }}
-        />
-      ) : tracksToDelete.length > 0 ? (
-        <DeleteTracksDialog
-          tracksToDelete={tracksToDelete}
-          open={confirmDeleteDialogOpen}
-          setOpen={setConfirmDeleteDialogOpen}
-          onConfirm={() => {
-            void refetchTracks();
-            setConfirmDeleteDialogOpen(false);
-            setTracksSelected({});
-          }}
-        />
-      ) : null}
+      <AddEditTrackDialog
+        onFormSubmit={() => {
+          void refetchTracks();
+        }}
+      />
+      <UploadFileDialog
+        onFormSubmit={() => {
+          void refetchTracks();
+        }}
+      />
+      <DeleteTracksDialog
+        onConfirm={() => {
+          void refetchTracks();
+        }}
+      />
     </div>
   );
 }

@@ -12,7 +12,7 @@ import {
 
 export interface ConfirmDialogProps {
   open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  setOpen: Dispatch<SetStateAction<boolean>> | ((open: boolean) => void);
   onConfirm: () => void;
   message: string;
 }
