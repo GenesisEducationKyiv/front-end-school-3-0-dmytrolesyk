@@ -1,4 +1,4 @@
-import { useBulkDeleteTracks, useDeleteTrack } from '@/features/tracks/lib/queries';
+import { useBulkDeleteTracks, useDeleteTrack } from '@/features/tracks/lib/queriesV2';
 import { ConfirmDialog, ConfirmDialogProps } from '@/ui/confirm-dialog';
 import { useTracksStore } from '../store/tracks-store';
 import { showToastError, showToastSuccess } from '@/lib/show-toast-message';
@@ -53,9 +53,9 @@ export function DeleteTracksDialog({ onConfirm }: DeleteTrackDialogProps) {
 
   const onConfirmDeleteTrack = () => {
     if (activeTrack) {
-      deleteTrack(activeTrack.id);
+      deleteTrack({ id: activeTrack.id });
     } else if (tracksToDelete.length > 0) {
-      bulkDeleteTracks(tracksToDelete);
+      bulkDeleteTracks({ ids: tracksToDelete });
     }
   };
 

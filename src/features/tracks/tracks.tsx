@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { columns } from '@/features/tracks/components/columns';
 import { DataTable } from '@/ui/data-table';
 import { Button } from '@/ui/button';
@@ -6,11 +5,11 @@ import { DebouncedInput } from '@/ui/debounced-input';
 import { AddEditTrackDialog } from '@/features/tracks/components/add-edit-track-dialog';
 import { UploadFileDialog } from '@/features/tracks/components/upload-file-dialog';
 import { TrackTableSkeleton } from '@/features/tracks/components/tracks-skeleton';
-import { getTracks } from '@/features/tracks/lib/queries';
 import { DeleteTracksDialog } from '@/features/tracks/components/delete-tracks-dialog';
 import { useTracksStore } from '@/features/tracks/store/tracks-store';
 import { useTracksPageSearchParamsState } from '@/features/tracks/hooks/use-search-params-state';
 import { createUpdaterHandler } from '@/lib/utils';
+import { useFetchTracks } from '@/features/tracks/lib/queriesV2';
 
 export function TracksPage() {
   const { selectedTracks, setSelectedTracks, setAddEditDialogOpen, setConfirmDeleteDialogOpen } =
@@ -38,7 +37,13 @@ export function TracksPage() {
     data,
     isLoading,
     refetch: refetchTracks,
-  } = useQuery(getTracks({ page, limit: size, sort, order, search }));
+  } = useFetchTracks({
+    page,
+    limit: size,
+    sort,
+    order,
+    search,
+  });
 
   if (isLoading || !data) {
     return <TrackTableSkeleton />;
@@ -97,7 +102,7 @@ export function TracksPage() {
         onSortingChange={createUpdaterHandler(sortingState, updateSorting)}
         columns={columns}
         data={data.data}
-        totalItems={data.meta.total}
+        totalItems={data.meta?.total ?? 0}
         rowSelection={selectedTracks}
         onRowSelectionChange={createUpdaterHandler(selectedTracks, setSelectedTracks)}
       />

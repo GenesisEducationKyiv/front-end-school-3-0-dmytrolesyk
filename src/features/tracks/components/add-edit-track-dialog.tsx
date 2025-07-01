@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { z } from 'zod';
-import { useQuery } from '@tanstack/react-query';
 import { useForm } from '@tanstack/react-form';
 import { Button } from '@/ui/button';
 import {
@@ -14,13 +13,19 @@ import {
 import { Input } from '@/ui/input';
 import { Label } from '@/ui/label';
 import { Spinner } from '@/ui/spinner';
-import { getGenres, useAddTrack, getTrack, useEditTrack } from '@/features/tracks/lib/queries';
 import { ConfirmDialog } from '@/ui/confirm-dialog';
 import { TrackSchema } from '@/features/tracks/lib/schemas';
 import { GenresTagInput } from './genres-input/genres-input';
 import { FieldError } from '@/ui/field-error';
 import { useTracksStore } from '@/features/tracks/store/tracks-store';
 import { showToastError, showToastSuccess } from '@/lib/show-toast-message';
+import {
+  useFetchGenres,
+  useFetchTrack,
+  useAddTrack,
+  useUpdateTrack,
+} from '@/features/tracks/lib/queriesV2';
+import { omitUndefined } from '@/lib/utils';
 
 const TrackFormSchema = TrackSchema.pick({
   title: true,
@@ -60,10 +65,10 @@ export function AddEditTrackDialog({ onFormSubmit }: AddEditTrackDialogProps) {
     }),
   );
 
-  const { data: genres = [], isLoading: isGetGenresLoading } = useQuery(getGenres());
+  const { data: genres = [], isLoading: isGetGenresLoading } = useFetchGenres();
 
-  const { data: trackToEdit, isLoading: isGetTrackLoading } = useQuery({
-    ...getTrack(activeTrack?.slug ?? ''),
+  const { data: trackToEdit, isLoading: isGetTrackLoading } = useFetchTrack({
+    slug: activeTrack?.slug ?? '',
     enabled: Boolean(activeTrack?.slug),
   });
 
@@ -82,7 +87,7 @@ export function AddEditTrackDialog({ onFormSubmit }: AddEditTrackDialogProps) {
     onError,
   });
 
-  const { mutate: editTrack, isPending: isEditTrackPending } = useEditTrack({
+  const { mutate: updateTrack, isPending: isEditTrackPending } = useUpdateTrack({
     onSuccess,
     onError,
   });
@@ -93,10 +98,11 @@ export function AddEditTrackDialog({ onFormSubmit }: AddEditTrackDialogProps) {
       onChange: TrackFormSchema,
     },
     onSubmit: ({ value: newTrack }) => {
+      const finalTrack = omitUndefined(newTrack);
       if (trackToEdit) {
-        editTrack({ id: trackToEdit.id, ...newTrack });
+        updateTrack({ id: trackToEdit.id, ...finalTrack });
       } else {
-        addTrack(newTrack);
+        addTrack(finalTrack);
       }
     },
   });

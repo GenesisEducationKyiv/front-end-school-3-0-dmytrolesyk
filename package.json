@@ -15,8 +15,10 @@
     "test": "playwright test -c tests/playwright.config.ts --ui"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "^2.6.0",
+    "@buf/dmytrolesyk_music-manager-api.bufbuild_es": "2.6.0-20250701205612-db36f79a8dc7.1",
+    "@buf/dmytrolesyk_music-manager-api.connectrpc_query-es": "2.1.0-20250701205612-db36f79a8dc7.1",
     "@connectrpc/connect": "^2.0.2",
+    "@connectrpc/connect-query": "^2.1.0",
     "@connectrpc/connect-web": "^2.0.2",
     "@mobily/ts-belt": "^3.13.1",
     "@radix-ui/react-alert-dialog": "^1.1.11",
@@ -51,8 +53,6 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
-    "@bufbuild/buf": "^1.55.1",
-    "@bufbuild/protoc-gen-es": "^2.6.0",
     "@eslint/js": "^9.22.0",
     "@playwright/experimental-ct-react": "^1.53.1",
     "@playwright/test": "^1.53.1",

@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
-      '@bufbuild/protobuf':
-        specifier: ^2.6.0
-        version: 2.6.0
+      '@buf/dmytrolesyk_music-manager-api.bufbuild_es':
+        specifier: 2.6.0-20250701205612-db36f79a8dc7.1
+        version: 2.6.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)
+      '@buf/dmytrolesyk_music-manager-api.connectrpc_query-es':
+        specifier: 2.1.0-20250701205612-db36f79a8dc7.1
+        version: 2.1.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)(@connectrpc/connect-query@2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.2)(@tanstack/react-query@5.81.2(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
       '@connectrpc/connect':
         specifier: ^2.0.2
         version: 2.0.2(@bufbuild/protobuf@2.6.0)
+      '@connectrpc/connect-query':
+        specifier: ^2.1.0
+        version: 2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.2)(@tanstack/react-query@5.81.2(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@connectrpc/connect-web':
         specifier: ^2.0.2
         version: 2.0.2(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))
@@ -80,12 +86,18 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      install:
+        specifier: ^0.13.0
+        version: 0.13.0
       lucide-react:
         specifier: ^0.503.0
         version: 0.503.0(react@19.1.0)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      npm:
+        specifier: ^11.4.2
+        version: 11.4.2
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -111,12 +123,6 @@ importers:
         specifier: ^5.0.5
         version: 5.0.5(@types/react@19.1.8)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
     devDependencies:
-      '@bufbuild/buf':
-        specifier: ^1.55.1
-        version: 1.55.1
-      '@bufbuild/protoc-gen-es':
-        specifier: ^2.6.0
-        version: 2.6.0(@bufbuild/protobuf@2.6.0)
       '@eslint/js':
         specifier: ^9.22.0
         version: 9.29.0
@@ -318,68 +324,40 @@ packages:
   '@balena/dockerignore@1.0.2':
     resolution: {integrity: sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q==}
 
-  '@bufbuild/buf-darwin-arm64@1.55.1':
-    resolution: {integrity: sha512-g76yEF2ALyjj+R8KVoIjPPS7zaPy6VDWg2b5PCCK04fKTbe5jyzOdYdvNyuM5hO8xpRPBjBrqO6LUAfS+0aRCQ==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [darwin]
+  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.4.0-20250701205612-db36f79a8dc7.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/dmytrolesyk_music-manager-api.bufbuild_es/-/dmytrolesyk_music-manager-api.bufbuild_es-2.4.0-20250701205612-db36f79a8dc7.1.tgz}
+    peerDependencies:
+      '@bufbuild/protobuf': ^2.4.0
 
-  '@bufbuild/buf-darwin-x64@1.55.1':
-    resolution: {integrity: sha512-hCkatzlV7DwHWEyzzcpsZgLtxABidT/EYBmLTy6oSCHimOJzR1c5ezKe75tX7myDAfV0HZExIM7+cSsWg3dTPg==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [darwin]
+  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.6.0-20250701205612-db36f79a8dc7.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/dmytrolesyk_music-manager-api.bufbuild_es/-/dmytrolesyk_music-manager-api.bufbuild_es-2.6.0-20250701205612-db36f79a8dc7.1.tgz}
+    peerDependencies:
+      '@bufbuild/protobuf': ^2.6.0
 
-  '@bufbuild/buf-linux-aarch64@1.55.1':
-    resolution: {integrity: sha512-hA4jGPZ2N+FUZt03w+hPt6YsbhAdOh2gNKBQnuysj8kdTqZ4mw1wCOUoRg9h7eqOr/2XCcOibWYO36H2eS2OYQ==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@bufbuild/buf-linux-armv7@1.55.1':
-    resolution: {integrity: sha512-npnzJSAZRUdh8+fmgsbXt+dogA+iU/i/qWh+3XhdLXW220nWpd1jAXcpquaVfer8EwMEcYjqVf8FA7IXOgjGXw==}
-    engines: {node: '>=12'}
-    cpu: [arm]
-    os: [linux]
-
-  '@bufbuild/buf-linux-x64@1.55.1':
-    resolution: {integrity: sha512-/48IjSA1kh/8kZl1bcDkikgH+9BMnPhhVqad+R7+3ttYOFqifet3n+hf2ipA26NtTpTfvOSRXj1tdx/80x0I1g==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [linux]
-
-  '@bufbuild/buf-win32-arm64@1.55.1':
-    resolution: {integrity: sha512-CE+jAN1ikRTIdny6Q/geccKsLhy4QEXzUaJUfAiUXqjSW2u/Et7+p9Wh6xUgXcSuIoz1aw8MVuCESrNMBt6LBg==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [win32]
-
-  '@bufbuild/buf-win32-x64@1.55.1':
-    resolution: {integrity: sha512-C4VYS96YBJkLhIKH6yh8BqHgIjqGe+G6yuAOOKxWsYdx3QbT5LYOr38AP1bzkFm0Gz9jOOr5n0pmAFwsOLYjiw==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [win32]
-
-  '@bufbuild/buf@1.55.1':
-    resolution: {integrity: sha512-V9tpe2XlRVyq33cct2lNz9nDDQG95WbPKlxQkMKt5i7tPsfqE3vzbGiEC96K0QJWhIU28OkjYD8+1SyYKBWVYg==}
-    engines: {node: '>=12'}
-    hasBin: true
+  '@buf/dmytrolesyk_music-manager-api.connectrpc_query-es@2.1.0-20250701205612-db36f79a8dc7.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/dmytrolesyk_music-manager-api.connectrpc_query-es/-/dmytrolesyk_music-manager-api.connectrpc_query-es-2.1.0-20250701205612-db36f79a8dc7.1.tgz}
+    peerDependencies:
+      '@bufbuild/protobuf': ^2.4.0
+      '@connectrpc/connect-query': ^2.1.0
 
   '@bufbuild/protobuf@2.6.0':
     resolution: {integrity: sha512-6cuonJVNOIL7lTj5zgo/Rc2bKAo4/GvN+rKCrUj7GdEHRzCk8zKOfFwUsL9nAVk5rSIsRmlgcpLzTRysopEeeg==}
 
-  '@bufbuild/protoc-gen-es@2.6.0':
-    resolution: {integrity: sha512-sKvgGndyw1stawiDKMLZyilj1BzMuUTlvyrBiDnzxGIjCMK4hoE0DsVBiqCuTFqENnLmEGdy+huOZ5KgQAGlFA==}
-    engines: {node: '>=14'}
-    hasBin: true
+  '@connectrpc/connect-query-core@2.1.0':
+    resolution: {integrity: sha512-lkBLMW8sIEkAgoUMe6DUEQ+vFwLc5TPjtkmFWW2rFPdkYgWw+gFJeHiMVUw+20K2zS3Ly5NPVWUtkl2kwgrZQQ==}
     peerDependencies:
-      '@bufbuild/protobuf': 2.6.0
-    peerDependenciesMeta:
-      '@bufbuild/protobuf':
-        optional: true
+      '@bufbuild/protobuf': 2.x
+      '@connectrpc/connect': ^2.0.1
+      '@tanstack/query-core': '>=5.62.0'
 
-  '@bufbuild/protoplugin@2.6.0':
-    resolution: {integrity: sha512-mfAwI+4GqUtbw/ddfyolEHaAL86ozRIVlOg2A+SVRbjx1CjsMc1YJO+hBSkt/pqfpR+PmWBbZLstHbXP8KGtMQ==}
+  '@connectrpc/connect-query@2.1.0':
+    resolution: {integrity: sha512-y0g+/CxWDL2xAhOeisOZqRQT4/bqbUKe3oNSyCdH31EL3+DCBNTv0tM+Mkw8WaxYr3q10z0eeJinjOG2R7fxxQ==}
+    peerDependencies:
+      '@bufbuild/protobuf': 2.x
+      '@connectrpc/connect': ^2.0.1
+      '@tanstack/react-query': '>=5.62.0'
+      react: ^18 || ^19
+      react-dom: ^18 || ^19
 
   '@connectrpc/connect-web@2.0.2':
     resolution: {integrity: sha512-QANMFPiL2o66BdBEctg4TsQLe5ozsBLqcle3dCBp7BwGlNGTY6NnNnqmt+YRnpeMW88GgomJwWNMGCrRD9pRKA==}
@@ -1507,11 +1485,6 @@ packages:
     resolution: {integrity: sha512-zTh2+1Y8ZpmeQaQVIc/ZZxsx8UzgKJyNg1PTvjzC7WMhPSVS8bfDX34k1SrwOf016qd5RU3az2UxUNue3IfQ5g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@typescript/vfs@1.6.1':
-    resolution: {integrity: sha512-JwoxboBh7Oz1v38tPbkrZ62ZXNHAk9bJ7c9x0eI5zBfBnBYGhURdbnh7Z4smN/MV48Y5OCcZb58n972UtbazsA==}
-    peerDependencies:
-      typescript: '*'
-
   '@vitejs/plugin-react@4.6.0':
     resolution: {integrity: sha512-5Kgff+m8e2PB+9j51eGHEpn5kUzRKH2Ry0qGoe8ItJg7pqnkPrYPkDQZGgGmTa0EGarHrkjLvOdU3b1fzI8otQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -2118,6 +2091,10 @@ packages:
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
+  install@0.13.0:
+    resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
+    engines: {node: '>= 0.10'}
+
   is-binary-path@2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
     engines: {node: '>=8'}
@@ -2368,6 +2345,78 @@ packages:
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
+
+  npm@11.4.2:
+    resolution: {integrity: sha512-+QweyLIHtiXW7bZpOu8j2ss5w45CF/6MRqlz8RnKs5KsDeI/4/B+WDGI2un9kQizhFrW9SW1mHQr0GDrrWC/8w==}
+    engines: {node: ^20.17.0 || >=22.9.0}
+    hasBin: true
+    bundledDependencies:
+      - '@isaacs/string-locale-compare'
+      - '@npmcli/arborist'
+      - '@npmcli/config'
+      - '@npmcli/fs'
+      - '@npmcli/map-workspaces'
+      - '@npmcli/package-json'
+      - '@npmcli/promise-spawn'
+      - '@npmcli/redact'
+      - '@npmcli/run-script'
+      - '@sigstore/tuf'
+      - abbrev
+      - archy
+      - cacache
+      - chalk
+      - ci-info
+      - cli-columns
+      - fastest-levenshtein
+      - fs-minipass
+      - glob
+      - graceful-fs
+      - hosted-git-info
+      - ini
+      - init-package-json
+      - is-cidr
+      - json-parse-even-better-errors
+      - libnpmaccess
+      - libnpmdiff
+      - libnpmexec
+      - libnpmfund
+      - libnpmorg
+      - libnpmpack
+      - libnpmpublish
+      - libnpmsearch
+      - libnpmteam
+      - libnpmversion
+      - make-fetch-happen
+      - minimatch
+      - minipass
+      - minipass-pipeline
+      - ms
+      - node-gyp
+      - nopt
+      - normalize-package-data
+      - npm-audit-report
+      - npm-install-checks
+      - npm-package-arg
+      - npm-pick-manifest
+      - npm-profile
+      - npm-registry-fetch
+      - npm-user-validate
+      - p-map
+      - pacote
+      - parse-conflict-json
+      - proc-log
+      - qrcode-terminal
+      - read
+      - semver
+      - spdx-expression-parse
+      - ssri
+      - supports-color
+      - tar
+      - text-table
+      - tiny-relative-date
+      - treeverse
+      - validate-npm-package-name
+      - which
 
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
@@ -2748,11 +2797,6 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <5.9.0'
-
-  typescript@5.4.5:
-    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
 
   typescript@5.7.3:
     resolution: {integrity: sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==}
@@ -3136,54 +3180,38 @@ snapshots:
 
   '@balena/dockerignore@1.0.2': {}
 
-  '@bufbuild/buf-darwin-arm64@1.55.1':
-    optional: true
+  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.4.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)':
+    dependencies:
+      '@bufbuild/protobuf': 2.6.0
 
-  '@bufbuild/buf-darwin-x64@1.55.1':
-    optional: true
+  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.6.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)':
+    dependencies:
+      '@bufbuild/protobuf': 2.6.0
 
-  '@bufbuild/buf-linux-aarch64@1.55.1':
-    optional: true
-
-  '@bufbuild/buf-linux-armv7@1.55.1':
-    optional: true
-
-  '@bufbuild/buf-linux-x64@1.55.1':
-    optional: true
-
-  '@bufbuild/buf-win32-arm64@1.55.1':
-    optional: true
-
-  '@bufbuild/buf-win32-x64@1.55.1':
-    optional: true
-
-  '@bufbuild/buf@1.55.1':
-    optionalDependencies:
-      '@bufbuild/buf-darwin-arm64': 1.55.1
-      '@bufbuild/buf-darwin-x64': 1.55.1
-      '@bufbuild/buf-linux-aarch64': 1.55.1
-      '@bufbuild/buf-linux-armv7': 1.55.1
-      '@bufbuild/buf-linux-x64': 1.55.1
-      '@bufbuild/buf-win32-arm64': 1.55.1
-      '@bufbuild/buf-win32-x64': 1.55.1
+  '@buf/dmytrolesyk_music-manager-api.connectrpc_query-es@2.1.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)(@connectrpc/connect-query@2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.2)(@tanstack/react-query@5.81.2(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))':
+    dependencies:
+      '@buf/dmytrolesyk_music-manager-api.bufbuild_es': 2.4.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)
+      '@bufbuild/protobuf': 2.6.0
+      '@connectrpc/connect-query': 2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.2)(@tanstack/react-query@5.81.2(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 
   '@bufbuild/protobuf@2.6.0': {}
 
-  '@bufbuild/protoc-gen-es@2.6.0(@bufbuild/protobuf@2.6.0)':
+  '@connectrpc/connect-query-core@2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.2)':
     dependencies:
-      '@bufbuild/protoplugin': 2.6.0
-    optionalDependencies:
       '@bufbuild/protobuf': 2.6.0
-    transitivePeerDependencies:
-      - supports-color
+      '@connectrpc/connect': 2.0.2(@bufbuild/protobuf@2.6.0)
+      '@tanstack/query-core': 5.81.2
 
-  '@bufbuild/protoplugin@2.6.0':
+  '@connectrpc/connect-query@2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.2)(@tanstack/react-query@5.81.2(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@bufbuild/protobuf': 2.6.0
-      '@typescript/vfs': 1.6.1(typescript@5.4.5)
-      typescript: 5.4.5
+      '@connectrpc/connect': 2.0.2(@bufbuild/protobuf@2.6.0)
+      '@connectrpc/connect-query-core': 2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.2)
+      '@tanstack/react-query': 5.81.2(react@19.1.0)
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
     transitivePeerDependencies:
-      - supports-color
+      - '@tanstack/query-core'
 
   '@connectrpc/connect-web@2.0.2(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))':
     dependencies:
@@ -4252,13 +4280,6 @@ snapshots:
       '@typescript-eslint/types': 8.35.0
       eslint-visitor-keys: 4.2.1
 
-  '@typescript/vfs@1.6.1(typescript@5.4.5)':
-    dependencies:
-      debug: 4.4.1
-      typescript: 5.4.5
-    transitivePeerDependencies:
-      - supports-color
-
   '@vitejs/plugin-react@4.6.0(vite@6.3.5(@types/node@22.15.32)(jiti@2.4.2)(lightningcss@1.30.1)(tsx@4.20.3)(yaml@2.8.0))':
     dependencies:
       '@babel/core': 7.27.4
@@ -4895,6 +4916,8 @@ snapshots:
 
   inherits@2.0.4: {}
 
+  install@0.13.0: {}
+
   is-binary-path@2.1.0:
     dependencies:
       binary-extensions: 2.3.0
@@ -5081,6 +5104,8 @@ snapshots:
   node-releases@2.0.19: {}
 
   normalize-path@3.0.0: {}
+
+  npm@11.4.2: {}
 
   once@1.4.0:
     dependencies:
@@ -5513,8 +5538,6 @@ snapshots:
       typescript: 5.7.3
     transitivePeerDependencies:
       - supports-color
-
-  typescript@5.4.5: {}
 
   typescript@5.7.3: {}
 

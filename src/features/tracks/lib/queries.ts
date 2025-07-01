@@ -13,7 +13,7 @@ import {
   ErrorResponse,
   validateApiResponseSchema,
   cleanSearchParams,
-} from '../../../lib/network/networkUtils';
+} from '@/lib/network/networkUtils';
 
 export const getTracks = (params: {
   page: number;

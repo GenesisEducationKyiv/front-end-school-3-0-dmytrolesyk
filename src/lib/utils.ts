@@ -30,3 +30,34 @@ export function createUpdaterHandler<T>(currentValue: T, setter: (value: T) => v
     setter(newValue);
   };
 }
+
+export const omitUndefined = <T extends Record<string, unknown>>(obj: T) => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([, val]) => {
+      return val !== undefined;
+    }),
+  ) as { [K in keyof T]: Exclude<T[K], undefined> };
+};
+
+export const getErrorMessage = (error: unknown) => {
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (
+    error &&
+    typeof error === 'object' &&
+    'data' in error &&
+    typeof error.data === 'object' &&
+    error.data &&
+    'error' in error.data
+  ) {
+    return String(error.data.error);
+  }
+
+  return 'An unknown error occurred';
+};
