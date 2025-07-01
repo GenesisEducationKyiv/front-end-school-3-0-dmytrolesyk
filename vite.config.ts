@@ -17,6 +17,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@connectrpc': path.resolve(
+        __dirname,
+        'node_modules/@buf/dmytrolesyk_music-manager-api.connectrpc_query-es',
+      ),
     },
   },
   server: {

@@ -37,7 +37,8 @@
     /* shadcn */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@connectrpc/*": ["node_modules/@buf/dmytrolesyk_music-manager-api.connectrpc_query-es/*"]
     }
   },
   "include": [

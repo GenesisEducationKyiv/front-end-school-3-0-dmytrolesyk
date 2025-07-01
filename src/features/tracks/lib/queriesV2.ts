@@ -9,7 +9,7 @@ import {
   bulkDeleteTracks,
   uploadTrackFile,
   deleteTrackFile,
-} from '@buf/dmytrolesyk_music-manager-api.connectrpc_query-es/tracks/v1/tracks-TracksService_connectquery';
+} from '@connectrpc/tracks/v1/tracks-TracksService_connectquery';
 import { cleanSearchParams } from '@/lib/network/networkUtils';
 import { keepPreviousData } from '@tanstack/react-query';
 import { SortOrder } from './types';
