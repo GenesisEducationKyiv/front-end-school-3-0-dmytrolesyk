@@ -17,14 +17,17 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@music-manager-api': path.resolve(
+      '@music-manager-api/tracks-queries': path.resolve(
         __dirname,
-        'node_modules/@buf/dmytrolesyk_music-manager-api.connectrpc_query-es',
+        'node_modules/@buf/dmytrolesyk_music-manager-api.connectrpc_query-es/tracks/v1/tracks-TracksService_connectquery',
+      ),
+      '@music-manager-api/tracks-service': path.resolve(
+        __dirname,
+        'node_modules/@buf/dmytrolesyk_music-manager-api.bufbuild_es/tracks/v1/tracks_pb',
       ),
     },
   },
   server: {
-    host: '127.0.0.1',
     port: 3000,
   },
 });

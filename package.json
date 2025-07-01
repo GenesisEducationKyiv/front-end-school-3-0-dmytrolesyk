@@ -15,8 +15,8 @@
     "test": "playwright test -c tests/playwright.config.ts --ui"
   },
   "dependencies": {
-    "@buf/dmytrolesyk_music-manager-api.bufbuild_es": "2.6.0-20250701205612-db36f79a8dc7.1",
-    "@buf/dmytrolesyk_music-manager-api.connectrpc_query-es": "2.1.0-20250701205612-db36f79a8dc7.1",
+    "@buf/dmytrolesyk_music-manager-api.bufbuild_es": "2.6.0-20250701220711-5e61dd8f723b.1",
+    "@buf/dmytrolesyk_music-manager-api.connectrpc_query-es": "2.1.0-20250701220711-5e61dd8f723b.1",
     "@connectrpc/connect": "^2.0.2",
     "@connectrpc/connect-query": "^2.1.0",
     "@connectrpc/connect-web": "^2.0.2",

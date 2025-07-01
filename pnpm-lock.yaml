@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@buf/dmytrolesyk_music-manager-api.bufbuild_es':
-        specifier: 2.6.0-20250701205612-db36f79a8dc7.1
-        version: 2.6.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)
+        specifier: 2.6.0-20250701220711-5e61dd8f723b.1
+        version: 2.6.0-20250701220711-5e61dd8f723b.1(@bufbuild/protobuf@2.6.0)
       '@buf/dmytrolesyk_music-manager-api.connectrpc_query-es':
-        specifier: 2.1.0-20250701205612-db36f79a8dc7.1
-        version: 2.1.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)(@connectrpc/connect-query@2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.5)(@tanstack/react-query@5.81.5(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
+        specifier: 2.1.0-20250701220711-5e61dd8f723b.1
+        version: 2.1.0-20250701220711-5e61dd8f723b.1(@bufbuild/protobuf@2.6.0)(@connectrpc/connect-query@2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.5)(@tanstack/react-query@5.81.5(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
       '@connectrpc/connect':
         specifier: ^2.0.2
         version: 2.0.2(@bufbuild/protobuf@2.6.0)
@@ -318,18 +318,18 @@ packages:
   '@balena/dockerignore@1.0.2':
     resolution: {integrity: sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q==}
 
-  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.4.0-20250701205612-db36f79a8dc7.1':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/dmytrolesyk_music-manager-api.bufbuild_es/-/dmytrolesyk_music-manager-api.bufbuild_es-2.4.0-20250701205612-db36f79a8dc7.1.tgz}
+  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.4.0-20250701220711-5e61dd8f723b.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/dmytrolesyk_music-manager-api.bufbuild_es/-/dmytrolesyk_music-manager-api.bufbuild_es-2.4.0-20250701220711-5e61dd8f723b.1.tgz}
     peerDependencies:
       '@bufbuild/protobuf': ^2.4.0
 
-  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.6.0-20250701205612-db36f79a8dc7.1':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/dmytrolesyk_music-manager-api.bufbuild_es/-/dmytrolesyk_music-manager-api.bufbuild_es-2.6.0-20250701205612-db36f79a8dc7.1.tgz}
+  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.6.0-20250701220711-5e61dd8f723b.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/dmytrolesyk_music-manager-api.bufbuild_es/-/dmytrolesyk_music-manager-api.bufbuild_es-2.6.0-20250701220711-5e61dd8f723b.1.tgz}
     peerDependencies:
       '@bufbuild/protobuf': ^2.6.0
 
-  '@buf/dmytrolesyk_music-manager-api.connectrpc_query-es@2.1.0-20250701205612-db36f79a8dc7.1':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/dmytrolesyk_music-manager-api.connectrpc_query-es/-/dmytrolesyk_music-manager-api.connectrpc_query-es-2.1.0-20250701205612-db36f79a8dc7.1.tgz}
+  '@buf/dmytrolesyk_music-manager-api.connectrpc_query-es@2.1.0-20250701220711-5e61dd8f723b.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/dmytrolesyk_music-manager-api.connectrpc_query-es/-/dmytrolesyk_music-manager-api.connectrpc_query-es-2.1.0-20250701220711-5e61dd8f723b.1.tgz}
     peerDependencies:
       '@bufbuild/protobuf': ^2.4.0
       '@connectrpc/connect-query': ^2.1.0
@@ -3100,17 +3100,17 @@ snapshots:
 
   '@balena/dockerignore@1.0.2': {}
 
-  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.4.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)':
+  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.4.0-20250701220711-5e61dd8f723b.1(@bufbuild/protobuf@2.6.0)':
     dependencies:
       '@bufbuild/protobuf': 2.6.0
 
-  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.6.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)':
+  '@buf/dmytrolesyk_music-manager-api.bufbuild_es@2.6.0-20250701220711-5e61dd8f723b.1(@bufbuild/protobuf@2.6.0)':
     dependencies:
       '@bufbuild/protobuf': 2.6.0
 
-  '@buf/dmytrolesyk_music-manager-api.connectrpc_query-es@2.1.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)(@connectrpc/connect-query@2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.5)(@tanstack/react-query@5.81.5(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))':
+  '@buf/dmytrolesyk_music-manager-api.connectrpc_query-es@2.1.0-20250701220711-5e61dd8f723b.1(@bufbuild/protobuf@2.6.0)(@connectrpc/connect-query@2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.5)(@tanstack/react-query@5.81.5(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))':
     dependencies:
-      '@buf/dmytrolesyk_music-manager-api.bufbuild_es': 2.4.0-20250701205612-db36f79a8dc7.1(@bufbuild/protobuf@2.6.0)
+      '@buf/dmytrolesyk_music-manager-api.bufbuild_es': 2.4.0-20250701220711-5e61dd8f723b.1(@bufbuild/protobuf@2.6.0)
       '@bufbuild/protobuf': 2.6.0
       '@connectrpc/connect-query': 2.1.0(@bufbuild/protobuf@2.6.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.6.0))(@tanstack/query-core@5.81.5)(@tanstack/react-query@5.81.5(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 

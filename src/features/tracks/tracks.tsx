@@ -10,6 +10,7 @@ import { useTracksStore } from '@/features/tracks/store/tracks-store';
 import { useTracksPageSearchParamsState } from '@/features/tracks/hooks/use-search-params-state';
 import { createUpdaterHandler } from '@/lib/utils';
 import { useFetchTracks } from '@/features/tracks/lib/queriesV2';
+import { ActiveTrack } from '@/features/tracks/components/active-track';
 
 export function TracksPage() {
   const { selectedTracks, setSelectedTracks, setAddEditDialogOpen, setConfirmDeleteDialogOpen } =
@@ -59,6 +60,7 @@ export function TracksPage() {
       >
         Music Management App
       </h1>
+      <ActiveTrack />
       <div className="flex items-center py-4 justify-between">
         <DebouncedInput
           wait={500}
