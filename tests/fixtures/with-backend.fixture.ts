@@ -6,7 +6,7 @@ const API_URL = 'http://localhost:8000';
 const test = base.extend({
   page: async ({ page }, use) => {
     const { host, port } = await getContainerInfoFromFile();
-    await page.route(API_URL, async route => {
+    await page.route(`${API_URL}/**`, async route => {
       const url = route.request().url();
       const newUrl = url.replace(API_URL, `http://${host}:${String(port)}`);
       await route.continue({ url: newUrl });
