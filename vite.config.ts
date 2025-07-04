@@ -7,7 +7,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
   plugins: [
-    tanstackRouter({ target: 'react', autoCodeSplitting: true }),
+    tanstackRouter({ target: 'react', autoCodeSplitting: true }), // code splitting was already configured here
     react({
       babel: {
         plugins: [['babel-plugin-react-compiler', { target: '19' }]],
@@ -16,7 +16,7 @@ export default defineConfig({
     tailwindcss(),
     visualizer({
       filename: './dist/bundle-analysis.html',
-      open: true,
+      open: false,
       gzipSize: true,
       brotliSize: true,
     }) as PluginOption,
@@ -24,6 +24,23 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+    },
+  },
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return 'react';
+            if (id.includes('@tanstack/')) return 'tanstack';
+            if (id.includes('wavesurfer.js')) return 'wavesurfer';
+            return 'vendor';
+          }
+
+          return undefined;
+        },
+      },
     },
   },
   server: {
