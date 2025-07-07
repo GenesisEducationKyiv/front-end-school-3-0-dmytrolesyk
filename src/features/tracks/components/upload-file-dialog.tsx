@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/ui/dialog';
-import { getTrack, useRemoveFile, useUploadFile } from '@/features/tracks/lib/queries';
+import { useFetchTrack, useUploadFile, useRemoveFile } from '@/features/tracks/lib/queriesV2';
 import { Button } from '@/ui/button';
 import { AudioFileUploadInput } from '@/ui/audio-upload';
 import { Spinner } from '@/ui/spinner';
@@ -26,8 +25,8 @@ export function UploadFileDialog({ onFormSubmit }: UploadFileDialogProps) {
       setUploadFileDialogOpen: state.setUploadFileDialogOpen,
     }));
 
-  const { data: trackToEdit, isLoading: isGetTrackLoading } = useQuery({
-    ...getTrack(activeTrack?.slug ?? ''),
+  const { data: trackToEdit, isLoading: isGetTrackLoading } = useFetchTrack({
+    slug: activeTrack?.slug ?? '',
     enabled: Boolean(activeTrack?.slug),
   });
 
@@ -58,15 +57,22 @@ export function UploadFileDialog({ onFormSubmit }: UploadFileDialogProps) {
     },
   });
 
-  const uploadFile = () => {
+  const uploadFile = async () => {
     if (trackToEdit && file) {
-      upload({ trackId: trackToEdit.id, file });
+      const arrayBuffer = await file.arrayBuffer();
+      const content = new Uint8Array(arrayBuffer);
+      upload({
+        id: trackToEdit.id,
+        fileName: file.name,
+        fileType: file.type,
+        content,
+      });
     }
   };
 
   const removeFile = () => {
     if (trackToEdit) {
-      remove(trackToEdit.id);
+      remove({ id: trackToEdit.id });
     }
   };
 
@@ -132,7 +138,7 @@ export function UploadFileDialog({ onFormSubmit }: UploadFileDialogProps) {
                 if (trackToEdit?.audioFile) {
                   setConfirmDialogOpen(true);
                 } else if (file) {
-                  uploadFile();
+                  void uploadFile();
                 }
               }}
               disabled={isGetTrackLoading || isProcessing || (!file && !trackToEdit?.audioFile)}

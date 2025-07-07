@@ -4,8 +4,17 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createConnectTransport } from '@connectrpc/connect-web';
+import { TransportProvider } from '@connectrpc/connect-query';
 
 import { routeTree } from './routeTree.gen';
+
+const BASE_API_URL = import.meta.env['VITE_API_HOST'];
+
+const transport = createConnectTransport({
+  baseUrl: BASE_API_URL,
+  useBinaryFormat: true,
+});
 
 const queryClient = new QueryClient();
 
@@ -30,8 +39,10 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <TransportProvider transport={transport}>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </TransportProvider>
   </StrictMode>,
 );
