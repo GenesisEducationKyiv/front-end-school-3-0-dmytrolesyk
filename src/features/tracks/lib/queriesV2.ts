@@ -9,19 +9,27 @@ import {
   bulkDeleteTracks,
   uploadTrackFile,
   deleteTrackFile,
-} from '@music-manager-api/tracks-queries';
-import { cleanSearchParams } from '@/lib/network/networkUtils';
+} from '@/lib/network/connectrpc';
+import { ConnectError } from '@connectrpc/connect';
 import { keepPreviousData } from '@tanstack/react-query';
-import { SortOrder } from './types';
+import { cleanSearchParams } from '@/lib/network/networkUtils';
 import { getErrorMessage } from '@/lib/utils';
+import {
+  MutationOptionsInternal,
+  OnMutationError,
+  OnMutationSuccess,
+  UseFetchTrackParams,
+  UseFetchTracksParams,
+} from './types';
 
-export const useFetchTracks = (params: {
-  page: number;
-  limit: number;
-  sort?: string | undefined;
-  order?: SortOrder | undefined;
-  search?: string | undefined;
-}) => {
+const getMutationOptions = (onSuccess: OnMutationSuccess, onError: OnMutationError) => ({
+  onSuccess,
+  onError: (error: ConnectError) => {
+    onError({ message: getErrorMessage(error) });
+  },
+});
+
+export const useFetchTracks = (params: UseFetchTracksParams) => {
   const { page = 0, limit = 10, sort, order, search } = params;
 
   const queryParams = cleanSearchParams({ page, limit, sort, order, search });
@@ -30,115 +38,43 @@ export const useFetchTracks = (params: {
   });
 };
 
-export const useFetchTrack = ({ slug, enabled = true }: { slug: string; enabled: boolean }) => {
+export const useFetchTrack = ({ slug, enabled = true }: UseFetchTrackParams) => {
   return useQuery(
     getTrack,
     { slug },
     {
       enabled,
-      select: data => {
-        const { track } = data;
-        return track;
-      },
+      select: data => data.track,
     },
   );
 };
 
 export const useFetchGenres = () => {
   return useQuery(getGenres, undefined, {
-    select: data => {
-      const { genres } = data;
-      return genres;
-    },
+    select: data => data.genres,
   });
 };
 
-export const useAddTrack = ({
-  onSuccess,
-  onError,
-}: {
-  onSuccess: () => void;
-  onError: (e: { message: string }) => void;
-}) => {
-  return useMutation(addTrack, {
-    onSuccess,
-    onError: error => {
-      onError({ message: getErrorMessage(error) });
-    },
-  });
+export const useAddTrack = ({ onSuccess, onError }: MutationOptionsInternal) => {
+  return useMutation(addTrack, getMutationOptions(onSuccess, onError));
 };
 
-export const useUpdateTrack = ({
-  onSuccess,
-  onError,
-}: {
-  onSuccess: () => void;
-  onError: (e: { message: string }) => void;
-}) => {
-  return useMutation(updateTrack, {
-    onSuccess,
-    onError: error => {
-      onError({ message: getErrorMessage(error) });
-    },
-  });
+export const useUpdateTrack = ({ onSuccess, onError }: MutationOptionsInternal) => {
+  return useMutation(updateTrack, getMutationOptions(onSuccess, onError));
 };
 
-export const useDeleteTrack = ({
-  onSuccess,
-  onError,
-}: {
-  onSuccess: () => void;
-  onError: (e: { message: string }) => void;
-}) => {
-  return useMutation(deleteTrack, {
-    onSuccess,
-    onError: error => {
-      onError({ message: getErrorMessage(error) });
-    },
-  });
+export const useDeleteTrack = ({ onSuccess, onError }: MutationOptionsInternal) => {
+  return useMutation(deleteTrack, getMutationOptions(onSuccess, onError));
 };
 
-export const useBulkDeleteTracks = ({
-  onSuccess,
-  onError,
-}: {
-  onSuccess: () => void;
-  onError: (e: { message: string }) => void;
-}) => {
-  return useMutation(bulkDeleteTracks, {
-    onSuccess,
-    onError: error => {
-      onError({ message: getErrorMessage(error) });
-    },
-  });
+export const useBulkDeleteTracks = ({ onSuccess, onError }: MutationOptionsInternal) => {
+  return useMutation(bulkDeleteTracks, getMutationOptions(onSuccess, onError));
 };
 
-export const useUploadFile = ({
-  onSuccess,
-  onError,
-}: {
-  onSuccess: () => void;
-  onError: (e: { message: string }) => void;
-}) => {
-  return useMutation(uploadTrackFile, {
-    onSuccess,
-    onError: error => {
-      onError({ message: getErrorMessage(error) });
-    },
-  });
+export const useUploadFile = ({ onSuccess, onError }: MutationOptionsInternal) => {
+  return useMutation(uploadTrackFile, getMutationOptions(onSuccess, onError));
 };
 
-export const useRemoveFile = ({
-  onSuccess,
-  onError,
-}: {
-  onSuccess: () => void;
-  onError: (e: { message: string }) => void;
-}) => {
-  return useMutation(deleteTrackFile, {
-    onSuccess,
-    onError: error => {
-      onError({ message: getErrorMessage(error) });
-    },
-  });
+export const useRemoveFile = ({ onSuccess, onError }: MutationOptionsInternal) => {
+  return useMutation(deleteTrackFile, getMutationOptions(onSuccess, onError));
 };

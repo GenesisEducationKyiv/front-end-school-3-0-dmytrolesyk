@@ -39,13 +39,7 @@
     /* shadcn */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@music-manager-api/tracks-queries": [
-        "node_modules/@buf/dmytrolesyk_music-manager-api.connectrpc_query-es/tracks/v1/tracks-TracksService_connectquery"
-      ],
-      "@music-manager-api/tracks-service": [
-        "node_modules/@buf/dmytrolesyk_music-manager-api.bufbuild_es/tracks/v1/tracks_pb"
-      ]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src", "playwright"]
