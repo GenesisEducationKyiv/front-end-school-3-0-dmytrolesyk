@@ -5,11 +5,12 @@ import { TracksService } from '@buf/dmytrolesyk_music-manager-api.bufbuild_es/tr
 
 const BASE_API_URL = import.meta.env['VITE_API_HOST'];
 
-const transport = createConnectTransport({
-  baseUrl: BASE_API_URL,
+export const connectrpcTransport = createConnectTransport({
+  baseUrl: `${BASE_API_URL}/connect`,
+  useBinaryFormat: true,
 });
 
-export const connectrpcClient = createClient(TracksService, transport);
+export const connectrpcClient = createClient(TracksService, connectrpcTransport);
 
 export {
   getTracks,

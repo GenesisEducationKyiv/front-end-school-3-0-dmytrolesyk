@@ -72,5 +72,6 @@
     "typescript-eslint": "^8.26.1",
     "vite": "^6.3.5"
   },
-  "proxy": "http://localhost:3000/api"
+  "proxy": "http://localhost:3000/api",
+  "packageManager": "pnpm@10.13.1"
 }

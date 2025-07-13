@@ -1,7 +1,230 @@
-So hey, I have very only severa minutes left before submission.
+# Music Manager App - Docker & SSL Setup
 
-It was stated in the task description that I should mention extra features here.
+This guide will help you set up the Music Manager app with Docker, nginx, SSL certificates, and custom domain for development and testing.
 
-Check out table state management via url query params. I think its pretty rad. You can copy and send it to someone and all the filters will be applied.
+## Prerequisites
 
-Also, check out the soundcloud style audio player.
+- Docker and Docker Compose installed
+- Node.js 20+ and pnpm
+- mkcert (will be installed automatically by the setup script)
+
+## Quick Start
+
+1. **Generate SSL certificates:**
+
+   ```bash
+   chmod +x setup-ssl.sh
+   ./setup-ssl.sh
+   ```
+
+   This will automatically install `mkcert` if not present and generate trusted certificates.
+
+2. **Add custom domain to your hosts file:**
+
+   ```bash
+   # On macOS/Linux
+   sudo echo "127.0.0.1 music-manager.app" >> /etc/hosts
+
+   # On Windows (run as Administrator)
+   echo "127.0.0.1 music-manager.app" >> C:\Windows\System32\drivers\etc\hosts
+   ```
+
+3. **Build and run with Docker:**
+
+   ```bash
+   docker-compose up --build
+   ```
+
+4. **Access your app:**
+   - HTTPS: https://music-manager.app
+   - HTTP: http://music-manager.app (redirects to HTTPS)
+
+## SSL Certificate Setup with mkcert
+
+### Why mkcert?
+
+`mkcert` is much better than OpenSSL for local development because:
+
+- ✅ No browser warnings ("This connection is not trusted")
+- ✅ Automatically installs certificates in your system's trust store
+- ✅ Works seamlessly across all browsers
+- ✅ Simple one-command setup
+
+### Manual Installation (if needed)
+
+The setup script will install `mkcert` automatically, but you can also install it manually:
+
+#### macOS
+
+```bash
+brew install mkcert
+```
+
+#### Linux (Ubuntu/Debian)
+
+```bash
+sudo apt install libnss3-tools
+curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+chmod +x mkcert-v*-linux-amd64
+sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+```
+
+#### Windows
+
+```bash
+# With Chocolatey
+choco install mkcert
+
+# With Scoop
+scoop install mkcert
+```
+
+### Certificate Management
+
+```bash
+# Generate certificates (done by setup script)
+mkcert -key-file ssl/music-manager.key -cert-file ssl/music-manager.crt music-manager.app localhost 127.0.0.1 ::1
+
+# View installed CA location
+mkcert -CAROOT
+
+# Remove the local CA (if needed)
+mkcert -uninstall
+```
+
+## Development
+
+### Available Scripts
+
+- `pnpm run dev` - Start development server
+- `pnpm run build` - Build for production
+- `pnpm run ssl:setup` - Generate SSL certificates
+- `pnpm run docker:build` - Build Docker image
+- `pnpm run docker:compose` - Start with Docker Compose
+- `pnpm run docker:compose:down` - Stop Docker containers
+- `pnpm run dev:ssl` - Setup SSL and start with Docker
+
+### Running Tests
+
+```bash
+# Run Playwright tests
+pnpm run test
+
+# Run tests with UI
+pnpm run test:ui
+
+# Run tests in headed mode
+pnpm run test:headed
+```
+
+## Architecture
+
+### Docker Setup
+
+- **Multi-stage build**: Builds the React app and serves it with nginx
+- **SSL termination**: nginx handles HTTPS with mkcert-generated certificates
+- **Production-ready**: Includes compression, caching, and security headers
+
+### nginx Configuration
+
+- HTTP to HTTPS redirect
+- Client-side routing support
+- API proxy (adjust `/api` location as needed)
+- Static asset caching
+- Security headers
+
+### CI/CD (GitHub Actions)
+
+- Automated mkcert installation
+- SSL certificate generation
+- Docker container setup
+- Playwright test execution
+- Test result artifacts
+
+## Configuration
+
+### Environment Variables
+
+You can customize the setup with environment variables:
+
+```bash
+# Docker Compose
+COMPOSE_PROJECT_NAME=music-manager
+NODE_ENV=production
+```
+
+### API Configuration
+
+Update the nginx configuration in `nginx.conf` to match your API setup:
+
+```nginx
+location /api {
+    proxy_pass http://your-api-host:3000;
+    # ... other proxy settings
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **mkcert not found**: The setup script will install it automatically
+2. **Domain not resolving**: Ensure you've added `127.0.0.1 music-manager.app` to your hosts file
+3. **Docker build fails**: Make sure the SSL certificates are generated before building
+4. **Port conflicts**: Stop other services running on ports 80 or 443
+
+### Certificate Issues
+
+If you still see browser warnings:
+
+```bash
+# Reinstall the local CA
+mkcert -install
+
+# Regenerate certificates
+./setup-ssl.sh
+```
+
+### Logs
+
+View application logs:
+
+```bash
+docker-compose logs -f music-app
+```
+
+View nginx logs:
+
+```bash
+docker exec -it <container-name> tail -f /var/log/nginx/access.log
+docker exec -it <container-name> tail -f /var/log/nginx/error.log
+```
+
+## Security Notes
+
+- The SSL certificates are generated by mkcert and are for development only
+- mkcert creates a local CA that's trusted only on your machine
+- Never use development certificates in production
+- The setup includes basic security headers but may need adjustment for production use
+
+## GitHub Actions
+
+The workflow will:
+
+1. Install mkcert
+2. Generate SSL certificates
+3. Add the custom domain to the hosts file
+4. Build and start Docker containers
+5. Wait for the application to be ready
+6. Run Playwright tests
+7. Upload test results and reports
+
+The certificates will be automatically trusted in the CI environment, so no browser warnings will appear during testing.
+
+## Benefits of This Setup
+
+- 🚀 **Zero browser warnings** - Professional development experience
+- 🔒 **True HTTPS testing** - Tests run in the same environment as production
+- 📦 **Containerized** - Consistent environment across development and CI
+- 🧪 **Automated testing** - Playwright tests run seamlessly
+- 🔧 **Easy setup** - One script handles everything

@@ -1,0 +1,19 @@
+services:
+  music-manager-frontend:
+    build: .
+    ports:
+      - '80:80'
+      - '443:443'
+    depends_on:
+      - music-manager-backend
+    volumes:
+      - ./ssl:/etc/nginx/ssl:ro
+    environment:
+      - NODE_ENV=production
+  music-manager-backend:
+    image: dmytrolesyk/music-manager-backend:latest
+    ports:
+      - '8000:8000'
+
+volumes:
+  ssl-certs:
