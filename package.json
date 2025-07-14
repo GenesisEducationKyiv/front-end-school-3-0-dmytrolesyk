@@ -13,11 +13,11 @@
     "typecheck:node": "tsc --noEmit --project tsconfig.node.json",
     "test-ct": "playwright test -c tests/playwright-ct.config.ts",
     "test": "playwright test -c tests/playwright.config.ts --ui",
-    "docker:build": "docker-compose build music-manager-frontend",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f",
-    "docker:dev": "docker-compose up -d --build && docker-compose logs -f"
+    "docker:build": "docker compose build music-manager-frontend",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:dev": "docker compose up -d --build && docker compose logs -f"
   },
   "dependencies": {
     "@buf/dmytrolesyk_music-manager-api.bufbuild_es": "2.6.0-20250701220711-5e61dd8f723b.1",

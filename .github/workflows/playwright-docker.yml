@@ -17,11 +17,11 @@ jobs:
           
       - name: Build Docker image
         run: |
-          docker-compose build music-manager-frontend
+          docker compose build music-manager-frontend
           
       - name: Start containers
         run: |
-          docker-compose up -d
+          docker compose up -d
           
       - name: Wait for services to be ready
         run: |
@@ -50,7 +50,7 @@ jobs:
       - name: Upload Docker logs
         if: failure()
         run: |
-          docker-compose logs > docker-logs.txt
+          docker compose logs > docker-logs.txt
           
       - name: Upload logs artifact
         uses: actions/upload-artifact@v4
@@ -62,4 +62,4 @@ jobs:
           
       - name: Cleanup
         if: always()
-        run: docker-compose down -v
+        run: docker compose down -v

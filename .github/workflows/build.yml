@@ -44,12 +44,12 @@ jobs:
           
       - name: Build Docker image
         run: |
-          docker-compose build music-manager-frontend
+          docker compose build music-manager-frontend
           
       - name: Test Docker image with backend
         run: |
-          # Start both services with docker-compose
-          docker-compose up -d
+          # Start both services with docker compose
+          docker compose up -d
           
           # Wait for services to be ready
           echo "Waiting for services to start..."
@@ -59,7 +59,7 @@ jobs:
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost)
           if [ "$HTTP_STATUS" != "301" ]; then
             echo "❌ HTTP redirect test failed (expected 301, got $HTTP_STATUS)"
-            docker-compose logs
+            docker compose logs
             exit 1
           fi
           echo "✅ HTTP redirect working (301)"
@@ -68,7 +68,7 @@ jobs:
           HTTPS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -k https://localhost)
           if [ "$HTTPS_STATUS" != "200" ]; then
             echo "❌ HTTPS test failed (expected 200, got $HTTPS_STATUS)"
-            docker-compose logs
+            docker compose logs
             exit 1
           fi
           echo "✅ HTTPS test working (200)"
@@ -77,10 +77,10 @@ jobs:
           API_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -k -X POST -H "Content-Type: application/json" -d '{"page": 1, "limit": 1}' https://localhost/connect/tracks.v1.TracksService/GetTracks)
           if [ "$API_STATUS" != "200" ]; then
             echo "❌ API test failed (expected 200, got $API_STATUS)"
-            docker-compose logs
+            docker compose logs
             exit 1
           fi
           echo "✅ API connectivity working (200)"
           
           # Cleanup
-          docker-compose down -v
+          docker compose down -v
