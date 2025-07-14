@@ -1,0 +1,55 @@
+name: 'Setup Docker with SSL'
+description: 'Setup Docker Buildx, install mkcert, and generate SSL certificates'
+
+inputs:
+  certificate-domains:
+    description: 'Domains for SSL certificate (space-separated)'
+    required: false
+    default: 'localhost 127.0.0.1 ::1'
+  ssl-directory:
+    description: 'Directory to store SSL certificates'
+    required: false
+    default: 'ssl'
+  cert-filename:
+    description: 'Certificate filename (without extension)'
+    required: false
+    default: 'music-manager'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Install mkcert
+      shell: bash
+      run: |
+        if ! command -v mkcert &> /dev/null; then
+          echo "Installing mkcert..."
+          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+          chmod +x mkcert-v*-linux-amd64
+          sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+          mkcert -install
+        else
+          echo "mkcert already installed"
+        fi
+        
+    - name: Generate SSL certificates
+      shell: bash
+      run: |
+        mkdir -p ${{ inputs.ssl-directory }}
+        mkcert -key-file ${{ inputs.ssl-directory }}/${{ inputs.cert-filename }}.key \
+               -cert-file ${{ inputs.ssl-directory }}/${{ inputs.cert-filename }}.crt \
+               ${{ inputs.certificate-domains }}
+        
+    - name: Verify SSL certificates
+      shell: bash
+      run: |
+        if [[ -f "${{ inputs.ssl-directory }}/${{ inputs.cert-filename }}.crt" && -f "${{ inputs.ssl-directory }}/${{ inputs.cert-filename }}.key" ]]; then
+          echo "✅ SSL certificates generated successfully"
+          echo "Certificate: ${{ inputs.ssl-directory }}/${{ inputs.cert-filename }}.crt"
+          echo "Private key: ${{ inputs.ssl-directory }}/${{ inputs.cert-filename }}.key"
+        else
+          echo "❌ SSL certificate generation failed"
+          exit 1
+        fi

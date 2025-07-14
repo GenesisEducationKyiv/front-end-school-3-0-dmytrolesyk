@@ -11,6 +11,13 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
+# Set environment variable for build
+ARG VITE_API_HOST
+ENV VITE_API_HOST=$VITE_API_HOST
+
+# Debug: Print environment variable
+RUN echo "Building with VITE_API_HOST: $VITE_API_HOST"
+
 RUN pnpm run build
 
 # Production stage with nginx

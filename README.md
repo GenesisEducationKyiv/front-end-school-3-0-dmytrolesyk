@@ -1,230 +1,243 @@
-# Music Manager App - Docker & SSL Setup
+# Music Manager App
 
-This guide will help you set up the Music Manager app with Docker, nginx, SSL certificates, and custom domain for development and testing.
+A modern music management application built with React 19, TypeScript, and Connect-RPC, featuring a containerized architecture with SSL support.
+
+## Tech Stack
+
+- **Frontend**: React 19 with TypeScript
+- **Build Tool**: Vite with React Compiler
+- **Routing**: TanStack Router with file-based routing
+- **State Management**: Zustand + TanStack Query
+- **API Communication**: Connect-RPC with gRPC-Web
+- **Styling**: Tailwind CSS v4 with Radix UI components
+- **Testing**: Playwright for E2E and component tests
+- **Containerization**: Docker with nginx and SSL
 
 ## Prerequisites
 
-- Docker and Docker Compose installed
-- Node.js 20+ and pnpm
-- mkcert (will be installed automatically by the setup script)
+- **Node.js** 20+ and **pnpm**
+- **Docker** and **Docker Compose**
+- **mkcert** (for SSL certificates)
 
 ## Quick Start
 
-1. **Generate SSL certificates:**
+### Option 1: Development Server (Recommended for development)
 
+1. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
+
+2. **Copy environment file:**
+   ```bash
+   cp .env.example .env
+   ```
+
+3. **Start development server:**
+   ```bash
+   pnpm dev
+   ```
+
+4. **Access your app:**
+   - Development: http://localhost:3000
+
+### Option 2: Docker Setup (Production-like environment)
+
+1. **Generate SSL certificates:**
    ```bash
    chmod +x setup-ssl.sh
    ./setup-ssl.sh
    ```
 
-   This will automatically install `mkcert` if not present and generate trusted certificates.
-
-2. **Add custom domain to your hosts file:**
-
+2. **Start with Docker:**
    ```bash
-   # On macOS/Linux
-   sudo echo "127.0.0.1 music-manager.app" >> /etc/hosts
-
-   # On Windows (run as Administrator)
-   echo "127.0.0.1 music-manager.app" >> C:\Windows\System32\drivers\etc\hosts
+   pnpm docker:dev
    ```
 
-3. **Build and run with Docker:**
+3. **Access your app:**
+   - HTTPS: https://localhost
+   - HTTP: http://localhost (redirects to HTTPS)
 
-   ```bash
-   docker-compose up --build
-   ```
+## Available Scripts
 
-4. **Access your app:**
-   - HTTPS: https://music-manager.app
-   - HTTP: http://music-manager.app (redirects to HTTPS)
+### Development
+- `pnpm dev` - Start development server (port 3000)
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build locally
 
-## SSL Certificate Setup with mkcert
+### Code Quality
+- `pnpm lint` - Run ESLint with strict TypeScript rules
+- `pnpm typecheck` - Run TypeScript type checking for app code
+- `pnpm typecheck:node` - Run TypeScript type checking for Node.js config files
+
+### Testing
+- `pnpm test` - Run Playwright E2E tests with UI
+- `pnpm test-ct` - Run Playwright component tests
+
+### Docker
+- `pnpm docker:build` - Build frontend Docker image
+- `pnpm docker:up` - Start all services (frontend + backend)
+- `pnpm docker:down` - Stop and remove all containers
+- `pnpm docker:logs` - Show logs from all services
+- `pnpm docker:dev` - Build, start, and follow logs (one command)
+
+## Environment Configuration
+
+The application uses environment variables for configuration:
+
+### `.env` (Docker/Production)
+```bash
+VITE_API_HOST=https://localhost          # API endpoint for Docker setup
+PLAYWRIGHT_BASE_URL=https://localhost    # Base URL for E2E tests against Docker
+```
+
+### `.env.example` (Development template)
+```bash
+VITE_API_HOST=http://localhost:8000      # API endpoint for dev server
+PLAYWRIGHT_BASE_URL=http://localhost:3000 # Base URL for E2E tests against dev server
+```
+
+Copy `.env.example` to `.env` and modify as needed for your environment.
+
+## Architecture
+
+### Frontend Architecture
+- **Component Structure**: Feature-based organization (`src/features/tracks/`)
+- **State Management**: Zustand for client state, TanStack Query for server state
+- **Routing**: File-based routing with TanStack Router
+- **API Layer**: Connect-RPC with generated TypeScript clients from protobuf
+
+### Docker Architecture
+- **Multi-stage build**: Optimized Docker image with separate build and runtime stages
+- **SSL termination**: nginx handles HTTPS with mkcert-generated certificates
+- **Network isolation**: Separate frontend and backend networks for security
+- **Production-ready**: Includes compression, caching, and security headers
+
+### Key Directories
+```
+src/
+├── features/tracks/           # Track management feature
+│   ├── components/           # Track-specific components
+│   ├── hooks/               # Custom hooks for tracks
+│   ├── lib/                 # Queries, schemas, utilities
+│   └── store/               # Zustand store
+├── lib/network/             # API client and network utilities
+├── routes/                  # TanStack Router routes
+└── ui/                      # Reusable UI components
+```
+
+## CI/CD Pipeline
+
+The project includes comprehensive GitHub Actions workflows:
+
+### Workflows
+- **Build**: Validates code quality, runs tests, and builds Docker images
+- **Playwright (Dev)**: Runs E2E tests against development server (manual trigger)
+- **Playwright (Docker)**: Runs E2E tests against production-like Docker setup
+
+### Reusable Actions
+- **setup-node-pnpm**: Configures Node.js, pnpm with optimized caching
+- **setup-docker-ssl**: Sets up Docker Buildx, installs mkcert, generates SSL certificates
+
+### Features
+- Automated SSL certificate generation in CI
+- Docker image validation with backend integration
+- Comprehensive test coverage (component + E2E)
+- Artifact collection for debugging
+
+## SSL Certificate Setup
 
 ### Why mkcert?
-
-`mkcert` is much better than OpenSSL for local development because:
-
-- ✅ No browser warnings ("This connection is not trusted")
-- ✅ Automatically installs certificates in your system's trust store
+`mkcert` provides trusted local SSL certificates without browser warnings:
+- ✅ Automatically installs certificates in system trust store
 - ✅ Works seamlessly across all browsers
 - ✅ Simple one-command setup
 
-### Manual Installation (if needed)
-
-The setup script will install `mkcert` automatically, but you can also install it manually:
-
-#### macOS
-
+### Installation
 ```bash
+# macOS
 brew install mkcert
-```
 
-#### Linux (Ubuntu/Debian)
-
-```bash
+# Linux (Ubuntu/Debian)
 sudo apt install libnss3-tools
 curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
 chmod +x mkcert-v*-linux-amd64
 sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
-```
 
-#### Windows
-
-```bash
-# With Chocolatey
+# Windows (Chocolatey)
 choco install mkcert
-
-# With Scoop
-scoop install mkcert
 ```
 
-### Certificate Management
-
+### Generate Certificates
 ```bash
-# Generate certificates (done by setup script)
-mkcert -key-file ssl/music-manager.key -cert-file ssl/music-manager.crt music-manager.app localhost 127.0.0.1 ::1
+# Automatic setup
+./setup-ssl.sh
 
-# View installed CA location
-mkcert -CAROOT
-
-# Remove the local CA (if needed)
-mkcert -uninstall
+# Manual setup
+mkcert -install
+mkdir -p ssl
+mkcert -key-file ssl/music-manager.key -cert-file ssl/music-manager.crt localhost 127.0.0.1 ::1
 ```
 
-## Development
+## Development Workflow
 
-### Available Scripts
+### Local Development
+1. Copy `.env.example` to `.env`
+2. Run `pnpm install`
+3. Start development: `pnpm dev`
+4. Run tests: `pnpm test` or `pnpm test-ct`
 
-- `pnpm run dev` - Start development server
-- `pnpm run build` - Build for production
-- `pnpm run ssl:setup` - Generate SSL certificates
-- `pnpm run docker:build` - Build Docker image
-- `pnpm run docker:compose` - Start with Docker Compose
-- `pnpm run docker:compose:down` - Stop Docker containers
-- `pnpm run dev:ssl` - Setup SSL and start with Docker
+### Docker Development
+1. Generate SSL certificates: `./setup-ssl.sh`
+2. Start containers: `pnpm docker:dev`
+3. Access at https://localhost
+4. View logs: `pnpm docker:logs`
+5. Stop containers: `pnpm docker:down`
 
-### Running Tests
+## Testing
 
-```bash
-# Run Playwright tests
-pnpm run test
+### E2E Testing
+- **Development server**: `pnpm test` (against http://localhost:3000)
+- **Docker container**: Tests run automatically in CI against https://localhost
+- **Component tests**: `pnpm test-ct`
 
-# Run tests with UI
-pnpm run test:ui
-
-# Run tests in headed mode
-pnpm run test:headed
-```
-
-## Architecture
-
-### Docker Setup
-
-- **Multi-stage build**: Builds the React app and serves it with nginx
-- **SSL termination**: nginx handles HTTPS with mkcert-generated certificates
-- **Production-ready**: Includes compression, caching, and security headers
-
-### nginx Configuration
-
-- HTTP to HTTPS redirect
-- Client-side routing support
-- API proxy (adjust `/api` location as needed)
-- Static asset caching
-- Security headers
-
-### CI/CD (GitHub Actions)
-
-- Automated mkcert installation
-- SSL certificate generation
-- Docker container setup
-- Playwright test execution
-- Test result artifacts
-
-## Configuration
-
-### Environment Variables
-
-You can customize the setup with environment variables:
-
-```bash
-# Docker Compose
-COMPOSE_PROJECT_NAME=music-manager
-NODE_ENV=production
-```
-
-### API Configuration
-
-Update the nginx configuration in `nginx.conf` to match your API setup:
-
-```nginx
-location /api {
-    proxy_pass http://your-api-host:3000;
-    # ... other proxy settings
-}
-```
+### CI/CD Testing
+- Automatic testing on push/PR to main branches
+- Docker-based E2E testing with SSL
+- Manual dev server testing available
 
 ## Troubleshooting
 
 ### Common Issues
+1. **Port conflicts**: Stop services on ports 80, 443, 3000, 8000
+2. **SSL certificate issues**: Run `mkcert -install` and regenerate certificates
+3. **Docker build fails**: Ensure SSL certificates exist before building
+4. **API connection issues**: Check VITE_API_HOST in your .env file
 
-1. **mkcert not found**: The setup script will install it automatically
-2. **Domain not resolving**: Ensure you've added `127.0.0.1 music-manager.app` to your hosts file
-3. **Docker build fails**: Make sure the SSL certificates are generated before building
-4. **Port conflicts**: Stop other services running on ports 80 or 443
-
-### Certificate Issues
-
-If you still see browser warnings:
-
+### Debugging Commands
 ```bash
-# Reinstall the local CA
-mkcert -install
+# View Docker logs
+pnpm docker:logs
 
-# Regenerate certificates
-./setup-ssl.sh
+# Check container status
+docker ps
+
+# Rebuild from scratch
+pnpm docker:down && pnpm docker:dev
 ```
 
-### Logs
+## Contributing
 
-View application logs:
-
-```bash
-docker-compose logs -f music-app
-```
-
-View nginx logs:
-
-```bash
-docker exec -it <container-name> tail -f /var/log/nginx/access.log
-docker exec -it <container-name> tail -f /var/log/nginx/error.log
-```
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests: `pnpm test` and `pnpm test-ct`
+5. Check code quality: `pnpm lint` and `pnpm typecheck`
+6. Submit a pull request
 
 ## Security Notes
 
-- The SSL certificates are generated by mkcert and are for development only
-- mkcert creates a local CA that's trusted only on your machine
-- Never use development certificates in production
-- The setup includes basic security headers but may need adjustment for production use
-
-## GitHub Actions
-
-The workflow will:
-
-1. Install mkcert
-2. Generate SSL certificates
-3. Add the custom domain to the hosts file
-4. Build and start Docker containers
-5. Wait for the application to be ready
-6. Run Playwright tests
-7. Upload test results and reports
-
-The certificates will be automatically trusted in the CI environment, so no browser warnings will appear during testing.
-
-## Benefits of This Setup
-
-- 🚀 **Zero browser warnings** - Professional development experience
-- 🔒 **True HTTPS testing** - Tests run in the same environment as production
-- 📦 **Containerized** - Consistent environment across development and CI
-- 🧪 **Automated testing** - Playwright tests run seamlessly
-- 🔧 **Easy setup** - One script handles everything
+- SSL certificates are for development only
+- Never commit sensitive data to version control
+- The setup includes security headers for production use
+- Backend API runs on separate network in Docker setup

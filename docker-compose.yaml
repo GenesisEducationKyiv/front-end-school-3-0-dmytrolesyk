@@ -1,6 +1,9 @@
 services:
   music-manager-frontend:
-    build: .
+    build:
+      context: .
+      args:
+        VITE_API_HOST: ${VITE_API_HOST}
     ports:
       - '80:80'
       - '443:443'
@@ -10,10 +13,24 @@ services:
       - ./ssl:/etc/nginx/ssl:ro
     environment:
       - NODE_ENV=production
+    networks:
+      - frontend-network
+      - backend-network
+  
   music-manager-backend:
     image: dmytrolesyk/music-manager-backend:latest
     ports:
       - '8000:8000'
+    networks:
+      - backend-network
+
+networks:
+  frontend-network:
+    driver: bridge
+    name: music-manager-frontend
+  backend-network:
+    driver: bridge
+    name: music-manager-backend
 
 volumes:
   ssl-certs:
