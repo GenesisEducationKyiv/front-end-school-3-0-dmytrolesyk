@@ -8,6 +8,13 @@ on:
   schedule:
     # Run security audit daily at 2 AM UTC
     - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      run_snyk_scan:
+        description: 'Run Snyk vulnerability scan'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   dependency-audit:
@@ -38,6 +45,7 @@ jobs:
           retention-days: 30
 
   snyk-scan:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.run_snyk_scan == 'true'
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
