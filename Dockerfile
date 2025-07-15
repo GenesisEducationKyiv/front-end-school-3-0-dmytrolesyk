@@ -21,7 +21,7 @@ RUN echo "Building with VITE_API_HOST: $VITE_API_HOST"
 RUN pnpm run build
 
 # Production stage with nginx
-FROM nginx:alpine
+FROM nginx:1.28.0-alpine
 
 COPY nginx.conf /etc/nginx/nginx.conf
 

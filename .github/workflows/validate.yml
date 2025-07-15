@@ -1,0 +1,22 @@
+name: Validate
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        
+      - name: Run linter
+        run: pnpm lint
+        
+      - name: Run typecheck
+        run: pnpm typecheck && pnpm typecheck:node

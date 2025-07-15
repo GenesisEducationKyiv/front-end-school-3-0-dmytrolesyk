@@ -19,15 +19,15 @@ if ! command -v mkcert &> /dev/null; then
             # Ubuntu/Debian
             sudo apt update
             sudo apt install -y libnss3-tools
-            curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
-            chmod +x mkcert-v*-linux-amd64
-            sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+            curl -JLO "https://dl.filippo.io/mkcert/v1.4.4?for=linux/amd64"
+            chmod +x mkcert-v1.4.4-linux-amd64
+            sudo mv mkcert-v1.4.4-linux-amd64 /usr/local/bin/mkcert
         elif command -v yum &> /dev/null; then
             # CentOS/RHEL
             sudo yum install -y nss-tools
-            curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
-            chmod +x mkcert-v*-linux-amd64
-            sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+            curl -JLO "https://dl.filippo.io/mkcert/v1.4.4?for=linux/amd64"
+            chmod +x mkcert-v1.4.4-linux-amd64
+            sudo mv mkcert-v1.4.4-linux-amd64 /usr/local/bin/mkcert
         else
             echo "Please install mkcert manually: https://github.com/FiloSottile/mkcert#installation"
             exit 1

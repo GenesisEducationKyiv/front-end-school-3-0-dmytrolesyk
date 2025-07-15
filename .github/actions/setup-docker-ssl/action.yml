@@ -20,20 +20,20 @@ runs:
   steps:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
-      
-    - name: Install mkcert
+
+    - name: Install mkcert (if not present)
       shell: bash
       run: |
         if ! command -v mkcert &> /dev/null; then
           echo "Installing mkcert..."
-          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
-          chmod +x mkcert-v*-linux-amd64
-          sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+          curl -JLO "https://dl.filippo.io/mkcert/v1.4.4?for=linux/amd64"
+          chmod +x mkcert-v1.4.4-linux-amd64
+          sudo mv mkcert-v1.4.4-linux-amd64 /usr/local/bin/mkcert
           mkcert -install
         else
           echo "mkcert already installed"
         fi
-        
+
     - name: Generate SSL certificates
       shell: bash
       run: |
@@ -41,7 +41,7 @@ runs:
         mkcert -key-file ${{ inputs.ssl-directory }}/${{ inputs.cert-filename }}.key \
                -cert-file ${{ inputs.ssl-directory }}/${{ inputs.cert-filename }}.crt \
                ${{ inputs.certificate-domains }}
-        
+
     - name: Verify SSL certificates
       shell: bash
       run: |
