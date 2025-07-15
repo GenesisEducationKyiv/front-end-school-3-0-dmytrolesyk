@@ -1,0 +1,65 @@
+name: Docker E2E Tests
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  docker-e2e:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Docker with SSL
+        uses: ./.github/actions/setup-docker-ssl
+          
+      - name: Build Docker image
+        run: |
+          docker compose build music-manager-frontend
+          
+      - name: Start containers
+        run: |
+          docker compose up -d
+          
+      - name: Wait for services to be ready
+        run: |
+          timeout 60 bash -c 'until curl -k https://localhost > /dev/null 2>&1; do sleep 2; done'
+          
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps chromium
+        
+      - name: Run Playwright tests against Docker
+        run: |
+          pnpm exec playwright test -c tests/playwright-docker.config.ts
+          
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: docker-e2e-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+          
+      - name: Upload Docker logs
+        if: failure()
+        run: |
+          docker compose logs > docker-logs.txt
+          
+      - name: Upload logs artifact
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: docker-logs
+          path: docker-logs.txt
+          retention-days: 7
+          
+      - name: Cleanup
+        if: always()
+        run: docker compose down -v

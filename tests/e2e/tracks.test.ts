@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/with-backend.fixture';
+import { test, expect } from '@playwright/test';
 import { TEST_IDS } from '../constants';
 
 test('has title and header', async ({ page }) => {
