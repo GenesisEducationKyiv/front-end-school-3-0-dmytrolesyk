@@ -13,7 +13,7 @@ interface UploadFileDialogProps {
   onFormSubmit: () => void;
 }
 
-export function UploadFileDialog({ onFormSubmit }: UploadFileDialogProps) {
+export default function UploadFileDialog({ onFormSubmit }: UploadFileDialogProps) {
   const [file, setFile] = useState<File | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 

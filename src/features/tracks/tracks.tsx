@@ -1,16 +1,19 @@
+import { lazy, Suspense } from 'react';
 import { columns } from '@/features/tracks/components/columns';
 import { DataTable } from '@/ui/data-table';
 import { Button } from '@/ui/button';
 import { DebouncedInput } from '@/ui/debounced-input';
-import { AddEditTrackDialog } from '@/features/tracks/components/add-edit-track-dialog';
-import { UploadFileDialog } from '@/features/tracks/components/upload-file-dialog';
 import { TrackTableSkeleton } from '@/features/tracks/components/tracks-skeleton';
-import { DeleteTracksDialog } from '@/features/tracks/components/delete-tracks-dialog';
 import { useTracksStore } from '@/features/tracks/store/tracks-store';
 import { useTracksPageSearchParamsState } from '@/features/tracks/hooks/use-search-params-state';
 import { createUpdaterHandler } from '@/lib/utils';
 import { useFetchTracks } from '@/features/tracks/lib/queriesV2';
 import { CurrentTrack } from '@/features/tracks/components/current-track';
+import { InlineLoader } from '@/ui/loader';
+
+const DeleteTracksDialog = lazy(() => import('@/features/tracks/components/delete-tracks-dialog'));
+const AddEditTrackDialog = lazy(() => import('@/features/tracks/components/add-edit-track-dialog'));
+const UploadFileDialog = lazy(() => import('@/features/tracks/components/upload-file-dialog'));
 
 export function TracksPage() {
   const { selectedTracks, setSelectedTracks, setAddEditDialogOpen, setConfirmDeleteDialogOpen } =
@@ -108,21 +111,27 @@ export function TracksPage() {
         rowSelection={selectedTracks}
         onRowSelectionChange={createUpdaterHandler(selectedTracks, setSelectedTracks)}
       />
-      <AddEditTrackDialog
-        onFormSubmit={() => {
-          void refetchTracks();
-        }}
-      />
-      <UploadFileDialog
-        onFormSubmit={() => {
-          void refetchTracks();
-        }}
-      />
-      <DeleteTracksDialog
-        onConfirm={() => {
-          void refetchTracks();
-        }}
-      />
+      <Suspense fallback={<InlineLoader size="lg" />}>
+        <AddEditTrackDialog
+          onFormSubmit={() => {
+            void refetchTracks();
+          }}
+        />
+      </Suspense>
+      <Suspense fallback={<InlineLoader size="lg" />}>
+        <UploadFileDialog
+          onFormSubmit={() => {
+            void refetchTracks();
+          }}
+        />
+      </Suspense>
+      <Suspense fallback={<InlineLoader size="lg" />}>
+        <DeleteTracksDialog
+          onConfirm={() => {
+            void refetchTracks();
+          }}
+        />
+      </Suspense>
     </div>
   );
 }

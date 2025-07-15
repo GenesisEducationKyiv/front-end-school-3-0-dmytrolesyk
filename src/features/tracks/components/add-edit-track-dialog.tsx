@@ -53,7 +53,7 @@ const onError = ({ message }: { message: string }) => {
   showToastError(message);
 };
 
-export function AddEditTrackDialog({ onFormSubmit }: AddEditTrackDialogProps) {
+export default function AddEditTrackDialog({ onFormSubmit }: AddEditTrackDialogProps) {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   const { activeTrack, setActiveTrack, addEditDialogOpen, setAddEditDialogOpen } = useTracksStore(

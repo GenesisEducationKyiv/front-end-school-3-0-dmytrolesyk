@@ -5,7 +5,7 @@ import { showToastError, showToastSuccess } from '@/lib/show-toast-message';
 
 type DeleteTrackDialogProps = Pick<ConfirmDialogProps, 'onConfirm'>;
 
-export function DeleteTracksDialog({ onConfirm }: DeleteTrackDialogProps) {
+export default function DeleteTracksDialog({ onConfirm }: DeleteTrackDialogProps) {
   const {
     activeTrack,
     selectedTracks,
