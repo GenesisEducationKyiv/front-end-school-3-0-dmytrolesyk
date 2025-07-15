@@ -117,6 +117,8 @@ export default function UploadFileDialog({ onFormSubmit }: UploadFileDialogProps
                   src={trackToEdit.coverImage}
                   alt="Cover preview"
                   className="mt-2 max-h-48 rounded col-span-3"
+                  loading="lazy"
+                  decoding="async"
                 />
               )}
             </div>
