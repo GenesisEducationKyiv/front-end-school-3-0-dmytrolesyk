@@ -1,0 +1,80 @@
+name: Build
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        
+      - name: Build application
+        env:
+          VITE_API_HOST: https://localhost
+        run: pnpm build
+        
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+          retention-days: 7
+
+  docker-build:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Docker with SSL
+        uses: ./.github/actions/setup-docker-ssl
+          
+      - name: Build Docker image
+        run: |
+          docker compose build music-manager-frontend
+          
+      - name: Test Docker image with backend
+        run: |
+          # Start both services with docker compose
+          docker compose up -d
+          
+          # Wait for services to be ready
+          echo "Waiting for services to start..."
+          timeout 60 bash -c 'until curl -k -s https://localhost > /dev/null 2>&1; do sleep 2; done'
+          
+          # Test HTTP redirect (should return 301)
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost)
+          if [ "$HTTP_STATUS" != "301" ]; then
+            echo "❌ HTTP redirect test failed (expected 301, got $HTTP_STATUS)"
+            docker compose logs
+            exit 1
+          fi
+          echo "✅ HTTP redirect working (301)"
+          
+          # Test HTTPS (should return 200)
+          HTTPS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -k https://localhost)
+          if [ "$HTTPS_STATUS" != "200" ]; then
+            echo "❌ HTTPS test failed (expected 200, got $HTTPS_STATUS)"
+            docker compose logs
+            exit 1
+          fi
+          echo "✅ HTTPS test working (200)"
+          
+          # Test API connectivity (should return 200)
+          API_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -k -X POST -H "Content-Type: application/json" -d '{"page": 1, "limit": 1}' https://localhost/connect/tracks.v1.TracksService/GetTracks)
+          if [ "$API_STATUS" != "200" ]; then
+            echo "❌ API test failed (expected 200, got $API_STATUS)"
+            docker compose logs
+            exit 1
+          fi
+          echo "✅ API connectivity working (200)"
+          
+          # Cleanup
+          docker compose down -v
