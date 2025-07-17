@@ -1,3 +1,5 @@
+import storybook from 'eslint-plugin-storybook';
+
 import js from '@eslint/js';
 import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -38,6 +40,13 @@ export default tseslint.config(
         project: './tsconfig.node.json',
         tsconfigRootDir: import.meta.dirname,
       },
+    },
+  },
+  {
+    ...storybook.configs['flat/recommended'],
+    rules: {
+      ...storybook.configs['flat/recommended'].rules,
+      'storybook/default-exports': 'warn',
     },
   },
 );
