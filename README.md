@@ -1,6 +1,6 @@
 # Music Manager App
 
-A modern music management application built with React 19, TypeScript, and Connect-RPC, featuring a containerized architecture with SSL support.
+A music management application built with React 19, TypeScript, and Connect-RPC, featuring a containerized architecture with SSL support.
 
 ## Tech Stack
 
