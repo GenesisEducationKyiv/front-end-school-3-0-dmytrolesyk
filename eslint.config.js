@@ -11,7 +11,7 @@ export default tseslint.config(
   {
     extends: [js.configs.recommended, ...tseslint.configs.strictTypeChecked],
     files: ['**/*.{ts,tsx}'],
-    ignores: ['tests/**/*', 'tests-examples/**/*'],
+    ignores: ['tests/**/*', 'tests-examples/**/*', '.storybook/**/*'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -43,10 +43,7 @@ export default tseslint.config(
     },
   },
   {
-    ...storybook.configs['flat/recommended'],
-    rules: {
-      ...storybook.configs['flat/recommended'].rules,
-      'storybook/default-exports': 'warn',
-    },
+    files: ['**/*.stories.@(js|jsx|mjs|ts|tsx)', '.storybook/**/*'],
+    extends: [storybook.configs['flat/recommended']],
   },
 );
