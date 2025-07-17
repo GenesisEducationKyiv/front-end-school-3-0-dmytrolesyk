@@ -5,6 +5,7 @@ import { Input } from '@/ui/input';
 import { SortingButton } from './sorting-button';
 import { isValidInputValue } from '@/lib/type-guards';
 import { TracksTableActions } from './tracks-table-actions';
+import { TrackImage } from './track-image';
 
 export const columns: ColumnDef<TrackI>[] = [
   {
@@ -116,9 +117,7 @@ export const columns: ColumnDef<TrackI>[] = [
     header: 'Cover Image',
     cell: ({ row }) => {
       const imageUrl = row.original.coverImage;
-      return imageUrl ? (
-        <img className="mt-2 max-h-32 rounded" width={150} height={150} src={imageUrl} />
-      ) : null;
+      return imageUrl ? <TrackImage imageUrl={imageUrl} /> : null;
     },
   },
   {

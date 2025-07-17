@@ -7,7 +7,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
   plugins: [
-    tanstackRouter({ target: 'react', autoCodeSplitting: true }), // code splitting was already configured here
+    tanstackRouter({ target: 'react', autoCodeSplitting: true }),
     react({
       babel: {
         plugins: [['babel-plugin-react-compiler', { target: '19' }]],
@@ -35,6 +35,7 @@ export default defineConfig({
             if (id.includes('react')) return 'react';
             if (id.includes('@tanstack/')) return 'tanstack';
             if (id.includes('wavesurfer.js')) return 'wavesurfer';
+            if (id.includes('@connectrpc/')) return 'connectrpc';
             return 'vendor';
           }
 
@@ -42,6 +43,7 @@ export default defineConfig({
         },
       },
     },
+    chunkSizeWarningLimit: 1000,
   },
   server: {
     port: 3000,
