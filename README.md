@@ -8,7 +8,7 @@ A music management application built with React 19, TypeScript, and Connect-RPC,
 - **Build Tool**: Vite with React Compiler
 - **Routing**: TanStack Router with file-based routing
 - **State Management**: Zustand + TanStack Query
-- **API Communication**: Connect-RPC with gRPC-Web
+- **API Communication**: Connect-RPC
 - **Styling**: Tailwind CSS v4 with Radix UI components
 - **Testing**: Playwright for E2E and component tests
 - **Containerization**: Docker with nginx and SSL
